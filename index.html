@@ -6,15 +6,15 @@
     <title>Zeno</title>
     <style>
       :root {
-        --bg1: #7c3aed;
-        --bg2: #2563eb;
-        --card: rgba(255, 255, 255, 0.92);
-        --text: #0f172a;
-        --muted: rgba(15, 23, 42, 0.65);
-        --ring: rgba(99, 102, 241, 0.35);
-        --primary1: #7c3aed;
-        --primary2: #2563eb;
-        --success: #16a34a;
+        --bg: #0f0f0f;
+        --card: #1e1e1e;
+        --accent: #2aabee;
+        --text: #ffffff;
+        --muted: #8e8e93;
+        --border: rgba(255, 255, 255, 0.08);
+        --bubble-me: #2aabee;
+        --bubble-them: #2b2b2b;
+        --composer-bg: #0f0f0f;
       }
 
       * {
@@ -30,80 +30,74 @@
       body {
         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
           "Apple Color Emoji", "Segoe UI Emoji";
+        background: var(--bg);
         color: var(--text);
-        background: radial-gradient(1200px circle at 20% 10%, rgba(124, 58, 237, 0.45), transparent 55%),
-          radial-gradient(1000px circle at 80% 20%, rgba(37, 99, 235, 0.45), transparent 52%),
-          linear-gradient(135deg, var(--bg1), var(--bg2));
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 14px;
+        padding: 12px;
       }
 
       .app {
         width: 100%;
-        max-width: 460px;
+        max-width: 980px;
+        height: min(100vh - 24px, 820px);
       }
 
-      .card {
-        background: var(--card);
-        border: 1px solid rgba(255, 255, 255, 0.55);
-        border-radius: 22px;
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+      .shell {
+        height: 100%;
+        border-radius: 18px;
         overflow: hidden;
-        backdrop-filter: blur(10px);
-        max-height: calc(100vh - 28px);
-        display: flex;
-        flex-direction: column;
-      }
-
-      .cardHeader {
-        padding: 18px 18px 10px 18px;
-        text-align: center;
-      }
-
-      .brand {
-        margin: 0;
-        letter-spacing: 0.14em;
-        font-weight: 900;
-        font-size: 22px;
-      }
-
-      .subtitle {
-        margin: 8px 0 0 0;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .content {
-        padding: 12px 18px 16px 18px;
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
+        background: var(--card);
+        border: 1px solid var(--border);
       }
 
       .screen {
         display: none;
-        flex-direction: column;
-        min-height: 0;
+        height: 100%;
       }
+
       .screen.active {
         display: flex;
-        animation: fadeIn 140ms ease-out;
+        flex-direction: column;
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(4px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .auth {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 22px;
       }
 
-      .fieldLabel {
+      .logo {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+
+      .logoTitle {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 0.12em;
+        font-weight: 900;
+      }
+
+      .authTitle {
+        margin: 10px 0 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .formCard {
+        width: min(440px, 100%);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid var(--border);
+        padding: 18px;
+      }
+
+      label {
         display: block;
         font-size: 13px;
         color: var(--muted);
@@ -114,17 +108,17 @@
         width: 100%;
         height: 46px;
         border-radius: 14px;
-        border: 1px solid rgba(15, 23, 42, 0.12);
-        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.35);
         padding: 0 14px;
         font-size: 15px;
+        color: var(--text);
         outline: none;
-        transition: box-shadow 120ms ease, border-color 120ms ease;
       }
 
       .input:focus {
-        border-color: rgba(99, 102, 241, 0.4);
-        box-shadow: 0 0 0 5px var(--ring);
+        border-color: rgba(42, 171, 238, 0.55);
+        box-shadow: 0 0 0 5px rgba(42, 171, 238, 0.15);
       }
 
       .btn {
@@ -133,12 +127,10 @@
         border-radius: 14px;
         border: none;
         cursor: pointer;
-        color: white;
-        font-weight: 700;
+        font-weight: 800;
         font-size: 15px;
-        background: linear-gradient(135deg, var(--primary1), var(--primary2));
-        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.22);
-        transition: opacity 120ms ease, filter 120ms ease, transform 100ms ease;
+        background: var(--accent);
+        color: #041018;
       }
 
       .btn:active {
@@ -146,148 +138,315 @@
       }
 
       .btn:disabled {
+        opacity: 0.48;
+        background: rgba(42, 171, 238, 0.35);
         cursor: not-allowed;
-        opacity: 0.55;
-        filter: grayscale(10%);
-        background: #9aa3b2;
-        box-shadow: none;
+        color: var(--text);
       }
 
       .btnRow {
         margin-top: 12px;
       }
 
-      .codeWrap {
-        margin-top: 2px;
-      }
-
       .codeRow {
         display: flex;
-        justify-content: space-between;
-        gap: 4px;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 8px;
+        margin-bottom: 12px;
       }
 
       .codeInput {
         width: 50px;
         height: 60px;
-        border-radius: 16px;
-        border: 1px solid rgba(15, 23, 42, 0.12);
-        background: rgba(255, 255, 255, 0.85);
-        outline: none;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.35);
+        color: var(--text);
         text-align: center;
         font-size: 20px;
-        font-weight: 700;
-        transition: box-shadow 120ms ease, border-color 120ms ease;
+        font-weight: 800;
+        outline: none;
       }
 
       .codeInput:focus {
-        border-color: rgba(99, 102, 241, 0.45);
-        box-shadow: 0 0 0 5px var(--ring);
+        border-color: rgba(42, 171, 238, 0.55);
+        box-shadow: 0 0 0 5px rgba(42, 171, 238, 0.15);
       }
 
       .hint {
-        margin-top: 10px;
+        margin-top: 8px;
+        text-align: center;
         color: var(--muted);
         font-size: 12.5px;
-        text-align: center;
-        line-height: 1.25;
+        line-height: 1.2;
       }
 
       .resend {
-        margin-top: 12px;
+        margin-top: 14px;
         text-align: center;
       }
 
       .linkBtn {
-        background: none;
         border: none;
-        color: rgba(37, 99, 235, 0.9);
-        font-weight: 700;
+        background: none;
+        color: rgba(42, 171, 238, 0.95);
+        font-weight: 800;
         cursor: pointer;
         padding: 0;
-        text-decoration: none;
-      }
-
-      .linkBtn:hover {
         text-decoration: underline;
+        text-underline-offset: 3px;
       }
 
-      .mainWelcome {
-        text-align: center;
-        padding-top: 8px;
+      /* Chat layout */
+      .chat {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
       }
 
-      .welcomeTitle {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 900;
-      }
-
-      .welcomeSub {
-        margin: 10px 0 0 0;
-        color: var(--muted);
-        font-size: 13.5px;
-      }
-
-      .welcomeBadge {
-        display: inline-flex;
+      .topBar {
+        height: 64px;
+        display: flex;
         align-items: center;
-        gap: 8px;
-        margin-top: 14px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        border: 1px solid rgba(22, 163, 74, 0.25);
-        background: rgba(22, 163, 74, 0.08);
-        color: var(--success);
+        padding: 0 14px;
+        gap: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(42, 171, 238, 0.9), rgba(124, 58, 237, 0.65));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        color: #05111a;
+      }
+
+      .topMeta {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .userName {
+        font-weight: 900;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .userSub {
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .chatBody {
+        flex: 1;
+        display: flex;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 280px;
+        border-right: 1px solid var(--border);
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      .sidebarTitle {
+        color: var(--muted);
+        font-size: 12px;
         font-weight: 800;
-        font-size: 13px;
+        margin: 4px 6px 10px 6px;
       }
 
-      /* Компактность для телефонов */
-      @media (max-width: 420px) {
-        body {
-          padding: 10px;
-        }
-        .card {
-          border-radius: 18px;
-          max-height: calc(100vh - 20px);
-        }
-        .cardHeader {
-          padding: 16px 14px 8px 14px;
-        }
-        .content {
-          padding: 10px 14px 14px 14px;
-        }
-        .subtitle {
-          font-size: 12.5px;
-        }
-        .btn {
-          height: 44px;
-        }
-        .codeInput {
-          width: 50px;
-          height: 60px;
-          border-radius: 14px;
-        }
-        .codeRow {
-          gap: 3px;
-        }
+      .chatItem {
+        width: 100%;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text);
+        text-align: left;
+        padding: 10px 10px;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
 
-      /* Очень маленькие экраны: чуть уменьшаем зазоры, но ширину полей оставляем 50px */
-      @media (max-width: 360px) {
+      .chatItem:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .chatItem.active {
+        border-color: rgba(42, 171, 238, 0.35);
+        background: rgba(42, 171, 238, 0.08);
+      }
+
+      .chatItemName {
+        font-weight: 900;
+        font-size: 14px;
+      }
+
+      .chatItemPreview {
+        color: var(--muted);
+        font-size: 12.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .conversation {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .messages {
+        flex: 1;
+        padding: 14px;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .msgRow {
+        display: flex;
+        margin: 8px 0;
+      }
+
+      .msgRow.me {
+        justify-content: flex-end;
+      }
+
+      .msgRow.them {
+        justify-content: flex-start;
+      }
+
+      .bubble {
+        max-width: 76%;
+        padding: 10px 12px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+        line-height: 1.25;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .bubble.me {
+        background: rgba(42, 171, 238, 0.95);
+        border-color: rgba(42, 171, 238, 0.35);
+        color: #041018;
+      }
+
+      .bubble.them {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: var(--border);
+        color: var(--text);
+      }
+
+      .composer {
+        padding: 12px 14px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+        background: rgba(0, 0, 0, 0.15);
+      }
+
+      .composerInput {
+        flex: 1;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.45);
+        color: var(--text);
+        padding: 12px 12px;
+        font-size: 14px;
+        outline: none;
+        resize: none;
+        min-height: 46px;
+        max-height: 120px;
+      }
+
+      .sendBtn {
+        width: 46px;
+        height: 46px;
+        border-radius: 16px;
+        border: none;
+        cursor: pointer;
+        background: var(--accent);
+        color: #041018;
+        font-weight: 900;
+        flex-shrink: 0;
+      }
+
+      /* Responsive */
+      @media (max-width: 720px) {
+        .app {
+          max-width: 100%;
+          height: 100vh;
+          border-radius: 0;
+        }
         body {
           padding: 0;
         }
-        .app {
-          max-width: 100%;
+        .shell {
+          border-radius: 0;
         }
-        .content {
-          padding-left: 10px;
-          padding-right: 10px;
+        .sidebar {
+          width: 240px;
+        }
+      }
+
+      /* Phone: sidebar becomes a horizontal strip */
+      @media (max-width: 520px) {
+        .chatBody {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+          display: flex;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding: 10px 10px;
+          gap: 8px;
+        }
+        .sidebarTitle {
+          display: none;
+        }
+        .chatItem {
+          min-width: 180px;
+        }
+        .bubble {
+          max-width: 88%;
+        }
+      }
+
+      /* Узкие экраны: поджимаем зазор OTP-полей, сохраняя 50x60 */
+      @media (max-width: 420px) {
+        .formCard {
+          padding: 16px;
         }
         .codeRow {
-          gap: 2px;
+          gap: 6px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .codeRow {
+          gap: 4px;
         }
       }
     </style>
@@ -295,34 +454,47 @@
 
   <body>
     <div class="app">
-      <div class="card" role="application" aria-label="Zeno">
-        <div class="cardHeader">
-          <h1 class="brand">ZENO</h1>
-          <p class="subtitle" id="subtitleText">Вход по номеру телефона</p>
-        </div>
-
-        <div class="content">
-          <section class="screen active" id="screen-enter" aria-label="Ввод номера">
-            <label class="fieldLabel" for="phone">Номер телефона</label>
-            <input
-              class="input"
-              id="phone"
-              type="tel"
-              inputmode="tel"
-              autocomplete="tel"
-              placeholder="+7 999 123-45-67"
-            />
-
-            <div class="btnRow">
-              <button class="btn" id="btnNext" type="button" disabled>Далее</button>
+      <div class="shell">
+        <!-- AUTH: ENTER PHONE -->
+        <section class="screen active" id="screen-enter">
+          <div class="auth">
+            <div class="logo">
+              <h1 class="logoTitle">ZENO</h1>
+              <div class="authTitle" id="enterSubtitle">Вход по номеру телефона</div>
             </div>
-          </section>
 
-          <section class="screen" id="screen-code" aria-label="Ввод кода">
-            <label class="fieldLabel" for="codeInputs">Код подтверждения</label>
+            <div class="formCard">
+              <label for="phone">Номер телефона</label>
+              <input
+                class="input"
+                id="phone"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                placeholder="+7 999 123-45-67"
+              />
 
-            <div class="codeWrap">
-              <div class="codeRow" id="codeInputs" aria-label="Введите 6-значный код">
+              <div class="btnRow">
+                <button class="btn" id="btnNext" type="button" disabled>Далее</button>
+              </div>
+
+              <div class="hint">Мы отправим код подтверждения на указанный номер.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- AUTH: VERIFY CODE -->
+        <section class="screen" id="screen-code">
+          <div class="auth">
+            <div class="logo">
+              <h1 class="logoTitle">ZENO</h1>
+              <div class="authTitle">Введите код из SMS</div>
+            </div>
+
+            <div class="formCard">
+              <label for="codeInputs">Код подтверждения</label>
+
+              <div class="codeRow" id="codeInputsWrap" aria-label="Введите 6-значный код">
                 <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
                 <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
                 <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
@@ -330,30 +502,50 @@
                 <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
                 <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
               </div>
-            </div>
 
-            <div class="btnRow">
-              <button class="btn" id="btnConfirm" type="button" disabled>Подтвердить</button>
-            </div>
+              <div class="btnRow">
+                <button class="btn" id="btnConfirm" type="button" disabled>Подтвердить</button>
+              </div>
 
-            <div class="resend">
-              <button class="linkBtn" id="resendLink" type="button">
-                Не пришел код? Отправить снова
-              </button>
-            </div>
-          </section>
-
-          <section class="screen" id="screen-main" aria-label="Главный экран">
-            <div class="mainWelcome">
-              <p class="welcomeTitle" id="welcomeTitle">Привет, Пользователь!</p>
-              <p class="welcomeSub">Добро пожаловать в Zeno!</p>
-              <div class="welcomeBadge">
-                <span aria-hidden="true">✓</span>
-                <span>Вход выполнен</span>
+              <div class="resend">
+                <button class="linkBtn" id="resendLink" type="button">Не пришел код? Отправить снова</button>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
+
+        <!-- CHAT MAIN SCREEN -->
+        <section class="screen" id="screen-main">
+          <div class="chat">
+            <div class="topBar">
+              <div class="avatar" id="avatar">U</div>
+              <div class="topMeta">
+                <div class="userName" id="userName">Пользователь</div>
+                <div class="userSub" id="userSub">Zeno • Чаты</div>
+              </div>
+            </div>
+
+            <div class="chatBody">
+              <aside class="sidebar" id="chatList"></aside>
+
+              <div class="conversation">
+                <div class="messages" id="messages" aria-label="Сообщения"></div>
+
+                <div class="composer">
+                  <textarea
+                    class="composerInput"
+                    id="messageInput"
+                    rows="1"
+                    placeholder="Сообщение…"
+                  ></textarea>
+                  <button class="sendBtn" id="sendBtn" type="button" aria-label="Отправить">
+                    ↗
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -366,15 +558,51 @@
       const screenMain = document.getElementById("screen-main");
 
       const btnConfirm = document.getElementById("btnConfirm");
-      const codeInputsWrap = document.getElementById("codeInputs");
+      const resendLink = document.getElementById("resendLink");
+      const codeInputsWrap = document.getElementById("codeInputsWrap");
       const codeInputs = Array.from(codeInputsWrap.querySelectorAll("input.codeInput"));
 
-      const resendLink = document.getElementById("resendLink");
+      const avatarEl = document.getElementById("avatar");
+      const userNameEl = document.getElementById("userName");
+      const messagesEl = document.getElementById("messages");
+      const chatListEl = document.getElementById("chatList");
+      const messageInputEl = document.getElementById("messageInput");
+      const sendBtnEl = document.getElementById("sendBtn");
 
-      const welcomeTitle = document.getElementById("welcomeTitle");
-
+      // --- State ---
       let currentPhoneDigits = "";
+      let selectedChatId = null;
 
+      // demo model: chat messages kept in JS state
+      const chats = [
+        {
+          id: "c1",
+          name: "Дима",
+          messages: [
+            { from: "them", text: "Привет! Ты в Zeno?" },
+            { from: "me", text: "Да, только начал." },
+            { from: "them", text: "Круто. Давай попробуем чат." }
+          ],
+        },
+        {
+          id: "c2",
+          name: "Анна",
+          messages: [
+            { from: "them", text: "Какой код ввода?" },
+            { from: "me", text: "Любой 6-значный подходит :)"},
+            { from: "them", text: "Ок, работает!" }
+          ],
+        },
+        {
+          id: "c3",
+          name: "Поддержка",
+          messages: [
+            { from: "them", text: "Если что — напиши нам сообщение ниже." }
+          ],
+        },
+      ];
+
+      // --- Helpers ---
       function digitsOnly(s) {
         return String(s || "").replace(/\D/g, "");
       }
@@ -390,7 +618,6 @@
       }
 
       function checkCodeComplete() {
-        // Активируем кнопку только когда ВСЕ 6 полей заполнены цифрами.
         const code = codeInputs.map((el) => el.value).join("");
         const ok = /^\d{6}$/.test(code);
         btnConfirm.disabled = !ok;
@@ -412,28 +639,20 @@
         codeInputs[idx].select?.();
       }
 
-      function maskPhone(phoneDigits) {
-        if (phoneDigits.length < 10) return phoneEl.value || "";
-        return (
-          phoneDigits.slice(0, 2) +
-          " " +
-          phoneDigits.slice(2, 5) +
-          "-" +
-          phoneDigits.slice(5, 7) +
-          "-" +
-          phoneDigits.slice(7, 10)
-        );
-      }
-
-      function getUserName(phoneDigits) {
-        // Требование: "с именем пользователя". У нас нет отдельного поля имени,
-        // поэтому "имя" формируем детерминированно по телефону.
+      function getUserNameFromPhone(phoneDigits) {
+        // Требование: показывать имя пользователя.
+        // Делаем детерминированно по номеру.
         const last4 = phoneDigits.slice(-4);
         return last4 ? "Пользователь " + last4 : "Пользователь";
       }
 
+      function getAvatarLetter(userName) {
+        const first = (userName || "U").trim().charAt(0).toUpperCase();
+        return first || "U";
+      }
+
+      // --- AUTH: PHONE ---
       function updateNextState() {
-        // Требование: "Далее" активна, если номер не пустой.
         const d = digitsOnly(phoneEl.value);
         btnNext.disabled = d.length === 0;
       }
@@ -450,20 +669,18 @@
         focusCodeIndex(0);
       });
 
-      // Ввод/переход между OTP-полями
+      // --- AUTH: CODE INPUTS ---
       codeInputs.forEach((el, idx) => {
         el.addEventListener("input", () => {
-          // Поскольку maxlength=1, обычно будет 0/1 цифра,
-          // но на всякий случай поддержим ситуацию, когда в поле попало сразу несколько символов.
           const d = digitsOnly(el.value);
 
-          if (d.length === 0) {
+          if (!d) {
             el.value = "";
             checkCodeComplete();
             return;
           }
 
-          // Запишем до 6 цифр, начиная с текущего индекса.
+          // У нас maxlength=1, но иногда браузер может вставить 2+ символа.
           let writeAt = idx;
           for (let i = 0; i < d.length && writeAt < codeInputs.length; i++) {
             codeInputs[writeAt].value = d[i];
@@ -478,25 +695,17 @@
         el.addEventListener("keydown", (e) => {
           if (e.key !== "Backspace") return;
 
-          if (idx === 0) {
-            e.preventDefault();
-            el.value = "";
-            checkCodeComplete();
-            return;
-          }
-
           e.preventDefault();
-          // Требование: курсор переходит к предыдущему полю.
-          // Если в текущем поле была цифра — очистим текущую.
-          if (el.value && el.value.length > 0) el.value = "";
 
-          // Не очищаем предыдущее поле автоматически: просто переводим фокус.
-          focusCodeIndex(idx - 1);
+          // Требование: курсор переходит к предыдущему полю.
+          // Очищаем текущее поле и переходим назад (если idx > 0).
+          el.value = "";
+          if (idx > 0) focusCodeIndex(idx - 1);
           checkCodeComplete();
         });
       });
 
-      // Паста: вставляем до 6 цифр сразу.
+      // paste whole code
       codeInputsWrap.addEventListener("paste", (e) => {
         const text = e.clipboardData ? e.clipboardData.getData("text") : "";
         const d = digitsOnly(text).slice(0, 6);
@@ -505,41 +714,145 @@
         e.preventDefault();
         clearCodeInputs();
 
-        for (let i = 0; i < d.length; i++) {
-          codeInputs[i].value = d[i];
-        }
-
-        const lastFilled = Math.min(d.length - 1, codeInputs.length - 1);
-        focusCodeIndex(lastFilled);
+        for (let i = 0; i < d.length; i++) codeInputs[i].value = d[i];
+        focusCodeIndex(Math.min(d.length - 1, codeInputs.length - 1));
         checkCodeComplete();
       });
 
-      // Подтверждение
       btnConfirm.addEventListener("click", () => {
         if (!checkCodeComplete()) return;
 
+        // Требование: проверка кода (подойдет любой 6-значный).
         const code = getCode();
-        if (!/^\d{6}$/.test(code)) return; // дополнительная защита от некорректного состояния
+        if (!/^\d{6}$/.test(code)) return;
 
-        // "Если код правильный — переходим на главный экран"
-        // Проверка кода: подходит любой 6-значный.
-        const username = getUserName(currentPhoneDigits);
-        welcomeTitle.textContent = "Привет, " + username + "!";
+        // Success -> main screen
+        const userName = getUserNameFromPhone(currentPhoneDigits);
+        userNameEl.textContent = userName;
+        avatarEl.textContent = getAvatarLetter(userName);
 
+        // init chat UI
+        selectedChatId = chats[0]?.id || null;
+        renderChatList();
+        renderMessages();
         setScreen("main");
+
+        // Focus composer
+        setTimeout(() => messageInputEl.focus(), 0);
       });
 
-      // Ссылка: возвращает на экран входа
       resendLink.addEventListener("click", () => {
+        // Возврат на экран входа
         currentPhoneDigits = digitsOnly(phoneEl.value);
         clearCodeInputs();
         setScreen("enter");
-        // Сохраняем номер телефона как есть (UX), но фокусируемся на поле.
-        phoneEl.focus();
+        setTimeout(() => phoneEl.focus(), 0);
       });
 
-      // Инициализация состояния при загрузке
-      checkCodeComplete();
+      // --- CHAT RENDERING / SEND ---
+      function getSelectedChat() {
+        return chats.find((c) => c.id === selectedChatId) || chats[0];
+      }
+
+      function renderChatList() {
+        const items = chats
+          .map((c) => {
+            const last = c.messages[c.messages.length - 1];
+            const preview = last ? last.text : "Нет сообщений";
+            const active = c.id === selectedChatId ? "active" : "";
+            return `
+              <button class="chatItem ${active}" type="button" data-chat-id="${c.id}">
+                <div class="chatItemName">${c.name}</div>
+                <div class="chatItemPreview">${preview}</div>
+              </button>
+            `;
+          })
+          .join("");
+
+        chatListEl.innerHTML = `
+          <div class="sidebarTitle">Чаты</div>
+          ${items}
+        `;
+
+        chatListEl.querySelectorAll(".chatItem").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            selectedChatId = btn.getAttribute("data-chat-id");
+            renderChatList();
+            renderMessages();
+          });
+        });
+      }
+
+      function renderMessages() {
+        const chat = getSelectedChat();
+        const items = (chat?.messages || [])
+          .map((m) => {
+            const rowClass = m.from === "me" ? "me" : "them";
+            const bubbleClass = m.from === "me" ? "me" : "them";
+            return `
+              <div class="msgRow ${rowClass}">
+                <div class="bubble ${bubbleClass}">${escapeHtml(m.text)}</div>
+              </div>
+            `;
+          })
+          .join("");
+
+        messagesEl.innerHTML = items;
+        scrollMessagesToBottom();
+      }
+
+      function scrollMessagesToBottom() {
+        // Scroll after layout
+        requestAnimationFrame(() => {
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        });
+      }
+
+      function escapeHtml(s) {
+        return String(s || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function sendMessage() {
+        const chat = getSelectedChat();
+        if (!chat) return;
+
+        const text = String(messageInputEl.value || "").trim();
+        if (!text) return;
+
+        messageInputEl.value = "";
+        messageInputEl.style.height = "";
+
+        chat.messages.push({ from: "me", text });
+        renderMessages();
+
+        // demo reply
+        setTimeout(() => {
+          const replies = ["Понял!", "Ок.", "Отлично.", "Супер, давай дальше.", "Принято :)"];
+          const reply = replies[Math.floor(Math.random() * replies.length)];
+          chat.messages.push({ from: "them", text: reply });
+          renderMessages();
+        }, 550);
+      }
+
+      function autosizeTextarea(el) {
+        el.style.height = "auto";
+        el.style.height = el.scrollHeight + "px";
+      }
+
+      messageInputEl.addEventListener("input", () => autosizeTextarea(messageInputEl));
+      sendBtnEl.addEventListener("click", sendMessage);
+
+      messageInputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
     </script>
   </body>
 </html>
