@@ -19,11 +19,54 @@
       .auth { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:22px; }
       .logoTitle { margin:0; font-size:34px; font-weight:950; letter-spacing:.14em; text-align:center; }
       .authSub { margin-top:8px; color: var(--muted); font-size:13px; text-align:center; }
+
+      .logoCircleWrap { margin-bottom:14px; display:flex; justify-content:center; }
+      .logoCircle {
+        width:92px;
+        height:92px;
+        border-radius:50%;
+        background: linear-gradient(135deg, rgba(124,58,237,1), var(--accent));
+        position:relative;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-shadow: 0 18px 45px rgba(42,171,238,0.18);
+        overflow:hidden;
+        animation: floatLogo 3s ease-in-out infinite;
+      }
+      .logoCircle::before {
+        content:"";
+        position:absolute;
+        inset:-60%;
+        background: conic-gradient(from 90deg, rgba(124,58,237,0.85), rgba(42,171,238,0.95), rgba(124,58,237,0.85));
+        animation: spinLogo 4s linear infinite;
+        opacity:0.75;
+      }
+      .logoCircle::after {
+        content:"";
+        position:absolute;
+        inset:0;
+        background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 45%);
+        opacity:0.85;
+        pointer-events:none;
+      }
+      .logoZ {
+        position:relative;
+        font-size:44px;
+        font-weight:1000;
+        color:#041018;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+        animation: popLogo 260ms ease-out both;
+      }
+      @keyframes floatLogo { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+      @keyframes spinLogo { to { transform: rotate(360deg); } }
+      @keyframes popLogo { from { transform: scale(0.92); opacity:0.6; } to { transform: scale(1); opacity:1; } }
       .formCard { width:min(440px,100%); border-radius:16px; padding:18px; background: rgba(0,0,0,.22); border:1px solid var(--border); }
       label { display:block; font-size:13px; color:var(--muted); margin-bottom:8px; }
       .input { width:100%; height:46px; border-radius:14px; border:1px solid var(--border); background: rgba(0,0,0,.35); padding:0 14px; font-size:15px; color:var(--text); outline:none; }
       .input:focus { box-shadow:0 0 0 5px rgba(42,171,238,.15); border-color: rgba(42,171,238,.55); }
-      .btn { width:100%; height:46px; border-radius:14px; border:none; cursor:pointer; font-weight:950; font-size:15px; background:var(--accent); color:#041018; }
+      .btn { width:100%; height:46px; border-radius:14px; border:none; cursor:pointer; font-weight:950; font-size:15px; background:var(--accent); color:#041018; transition: transform 100ms ease, filter 100ms ease; }
+      .btn:active { transform: translateY(1px); }
       .btn:disabled { opacity:.48; background: rgba(42,171,238,.35); cursor:not-allowed; color:var(--text); }
       .hint { margin-top:10px; text-align:center; color:var(--muted); font-size:12.5px; }
       .error { margin-top:12px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,77,79,.35); background: rgba(255,77,79,.12); display:none; color:#fff; font-size:13px; }
@@ -40,14 +83,42 @@
       .userName { font-weight:950; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       .userSub { color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       .messages { flex:1; padding:14px; overflow-y:auto; background: rgba(0,0,0,.08); }
-      .msgRow { display:flex; margin:8px 0; }
+      .msgRow { display:flex; align-items:flex-end; gap:10px; margin:8px 0; }
       .msgRow.me { justify-content:flex-end; }
-      .bubble { max-width:76%; padding:10px 12px; border-radius:16px; border:1px solid var(--border); font-size:14px; line-height:1.25; white-space:pre-wrap; word-break:break-word; }
+      .msgRow.them { justify-content:flex-start; }
+      .msgBubbleWrap { display:flex; flex-direction:column; gap:6px; max-width:78%; }
+      .msgRow.me .msgBubbleWrap { align-items:flex-end; }
+      .msgRow.them .msgBubbleWrap { align-items:flex-start; }
+      .msgSenderName { font-size:11px; font-weight:900; color: var(--muted); padding:0 2px; }
+      .msgRow.me .msgSenderName { color: rgba(42,171,238,0.95); }
+      .msgAvatar {
+        width:30px;
+        height:30px;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:1000;
+        font-size:12px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.04);
+        flex-shrink:0;
+      }
+      .msgAvatar.me {
+        background: linear-gradient(135deg, rgba(42,171,238,0.95), rgba(124,58,237,0.55));
+        color:#041018;
+        border-color: rgba(42,171,238,0.35);
+      }
+      .bubble { padding:10px 12px; border-radius:16px; border:1px solid var(--border); font-size:14px; line-height:1.25; white-space:pre-wrap; word-break:break-word; }
       .bubble.me { background: rgba(42,171,238,.95); border-color: rgba(42,171,238,.35); color:#041018; }
       .bubble.them { background: rgba(30,30,30,.95); }
+
+      .messageEnter { animation: messageIn 220ms ease-out both; }
+      @keyframes messageIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
       .composer { padding:12px 14px; border-top:1px solid var(--border); display:flex; gap:10px; align-items:flex-end; background: rgba(0,0,0,.15); }
       .composerInput { flex:1; border-radius:16px; border:1px solid var(--border); background: rgba(0,0,0,.45); color:var(--text); padding:12px; font-size:14px; outline:none; resize:none; min-height:46px; max-height:120px; }
-      .sendBtn { width:46px; height:46px; border-radius:16px; border:none; cursor:pointer; background:var(--accent); color:#041018; font-weight:950; flex-shrink:0; }
+      .sendBtn { width:46px; height:46px; border-radius:16px; border:none; cursor:pointer; background:var(--accent); color:#041018; font-weight:950; flex-shrink:0; transition: transform 100ms ease, filter 120ms ease; }
+      .sendBtn:active { transform: translateY(1px); }
       @media(max-width:520px){ .app{height:100vh; max-width:100%; border-radius:0;} .shell{border-radius:0;} .codeRow{gap:6px;} .codeInput{width:50px;height:60px;} }
     </style>
   </head>
@@ -56,6 +127,11 @@
       <div class="shell">
         <div id="screen-enter" class="screen active">
           <div class="auth">
+            <div class="logoCircleWrap">
+              <div class="logoCircle" aria-hidden="true">
+                <span class="logoZ">Z</span>
+              </div>
+            </div>
             <h1 class="logoTitle">ZENO</h1>
             <div class="authSub">Вход по номеру телефона</div>
             <div class="formCard">
@@ -72,6 +148,11 @@
 
         <div id="screen-code" class="screen">
           <div class="auth">
+            <div class="logoCircleWrap">
+              <div class="logoCircle" aria-hidden="true">
+                <span class="logoZ">Z</span>
+              </div>
+            </div>
             <h1 class="logoTitle">ZENO</h1>
             <div class="authSub">Введите код из SMS</div>
             <div class="formCard">
@@ -125,7 +206,6 @@
         storageBucket: "zeno-offisal.firebasestorage.app",
         messagingSenderId: "280179393071",
         appId: "1:280179393071:web:227a3806f74cd59e04fcda",
-        measurementId: "G-F0WQ9FDGGN",
       };
     </script>
 
@@ -137,6 +217,7 @@
       let loginPhoneE164 = "";
       let currentPhoneE164 = "";
       let unsubMessages = null;
+      let knownMessageIds = new Set();
 
       const SUPPORT_PHONE = "support";
       const SUPPORT_NAME = "Поддержка";
@@ -401,6 +482,7 @@
 
       function renderMessages(items) {
         messagesEl.innerHTML = "";
+
         if (!items || items.length === 0) {
           messagesEl.innerHTML =
             '<div style="color: var(--muted); padding: 20px 0; text-align:center;">Сообщений пока нет</div>';
@@ -408,19 +490,52 @@
         }
 
         for (const m of items) {
+          const messageId = m.id;
           const from = m.from || "";
           const isMe = from === currentPhoneE164;
           const text = String(m.text || "");
 
+          const senderName = isMe ? getUserNameFromPhone(currentPhoneE164) : SUPPORT_NAME;
+          const senderLetter = getAvatarLetter(senderName);
+
           const row = document.createElement("div");
           row.className = "msgRow " + (isMe ? "me" : "them");
+
+          const avatar = document.createElement("div");
+          avatar.className = "msgAvatar " + (isMe ? "me" : "them");
+          avatar.textContent = senderLetter;
+
+          const bubbleWrap = document.createElement("div");
+          bubbleWrap.className = "msgBubbleWrap";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "msgSenderName";
+          nameEl.textContent = senderName;
 
           const bubble = document.createElement("div");
           bubble.className = "bubble " + (isMe ? "me" : "them");
           bubble.textContent = text;
 
-          row.appendChild(bubble);
+          bubbleWrap.appendChild(nameEl);
+          bubbleWrap.appendChild(bubble);
+
+          // Avatar placement: me -> right, them -> left
+          if (isMe) {
+            row.appendChild(bubbleWrap);
+            row.appendChild(avatar);
+          } else {
+            row.appendChild(avatar);
+            row.appendChild(bubbleWrap);
+          }
+
+          // Animate only new messages
+          if (messageId && !knownMessageIds.has(messageId)) {
+            row.classList.add("messageEnter");
+          }
+
           messagesEl.appendChild(row);
+
+          if (messageId) knownMessageIds.add(messageId);
         }
 
         requestAnimationFrame(() => {
@@ -444,7 +559,7 @@
           .orderBy("createdAt")
           .limit(100)
           .onSnapshot((snap) => {
-            const items = snap.docs.map((d) => d.data());
+            const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
             renderMessages(items);
           });
       }
