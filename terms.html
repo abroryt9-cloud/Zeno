@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Правила пользования — Zeno</title>
+    <style>
+      :root {
+        --bg: #0f0f0f;
+        --card: #1e1e1e;
+        --accent: #2aabee;
+        --text: #ffffff;
+        --muted: #8e8e93;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        padding: 18px 12px;
+      }
+
+      main {
+        width: 100%;
+        max-width: 860px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      h1 {
+        margin: 0 0 10px 0;
+        font-size: 22px;
+        letter-spacing: 0.02em;
+      }
+
+      h2 {
+        margin: 18px 0 8px 0;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      p, li {
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 13.5px;
+      }
+
+      ul { margin: 8px 0 0 18px; padding: 0; }
+      a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+      .accent { color: var(--accent); font-weight: 800; }
+
+      footer {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12.5px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Правила пользования мессенджером Zeno</h1>
+      <p>
+        Используя мессенджер Zeno, вы соглашаетесь с настоящими Правилами пользования.
+        Если вы не согласны — пожалуйста, не используйте сервис.
+      </p>
+
+      <h2>1) Условия регистрации</h2>
+      <ul>
+        <li>Регистрация выполняется через номер телефона с использованием Firebase Auth.</li>
+        <li>Вы несёте ответственность за корректность предоставленных данных.</li>
+        <li>Вы соглашаетесь получать SMS-коды для подтверждения и входа.</li>
+      </ul>
+
+      <h2>2) Запрещённые действия</h2>
+      <ul>
+        <li><span class="accent">Спам</span> и массовая рассылка сообщений без согласия получателей.</li>
+        <li><span class="accent">Харассмент</span>, угрозы, преследование, оскорбления.</li>
+        <li>Распространение запрещённого контента (включая мошенничество и вредоносные материалы).</li>
+        <li>Попытки обхода ограничений безопасности, взлом или несанкционированный доступ.</li>
+        <li>Использование сервиса для действий, нарушающих применимые законы.</li>
+      </ul>
+
+      <h2>3) Ответственность</h2>
+      <p>
+        Пользователь несёт ответственность за содержание сообщений и любые действия, выполненные
+        с использованием его аккаунта. Администрация сервиса может ограничивать доступ или удалять
+        контент при выявлении нарушений.
+      </p>
+
+      <h2>4) Прекращение использования</h2>
+      <p>
+        Вы можете прекратить использование сервиса в любой момент. Администрация сервиса может
+        приостановить/прекратить доступ пользователя при нарушении правил.
+      </p>
+
+      <h2>5) Прекращение действия или изменения условий</h2>
+      <p>
+        Мы можем изменять настоящие Правила. Обновления вступают в силу после публикации на этой
+        странице. Продолжая использовать сервис после изменений, вы принимаете обновлённые условия.
+      </p>
+
+      <h2>6) Контакты</h2>
+      <p>
+        Вопросы по правилам: <a href="mailto:abrorismurzaev@gmail.com">abrorismurzaev@gmail.com</a>
+      </p>
+
+      <footer>
+        <span>© Zeno</span>
+        <span>
+          <a href="privacy.html">Политика конфиденциальности</a>
+        </span>
+      </footer>
+    </main>
+  </body>
+</html>
+

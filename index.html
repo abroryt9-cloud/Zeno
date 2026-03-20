@@ -14,8 +14,24 @@
       body { font-family: ui-sans-serif, system-ui; background: var(--bg); color: var(--text); display:flex; justify-content:center; align-items:center; padding:12px; }
       .app { width:100%; max-width:980px; height:min(100vh - 24px, 860px); }
       .shell { height:100%; border-radius:18px; overflow:hidden; background: var(--card); border:1px solid var(--border); display:flex; flex-direction:column; }
-      .screen { display:none; height:100%; }
+      .screen { display:none; flex:1; min-height:0; }
       .screen.active { display:flex; flex-direction:column; }
+      .appFooter {
+        padding: 10px 14px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12.5px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+      .appFooter a {
+        color: rgba(42, 171, 238, 0.95);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .appFooter a:hover { filter: brightness(1.1); }
       .auth { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:22px; }
       .logoTitle { margin:0; font-size:34px; font-weight:950; letter-spacing:.14em; text-align:center; }
       .authSub { margin-top:8px; color: var(--muted); font-size:13px; text-align:center; }
@@ -192,6 +208,14 @@
             </div>
           </div>
         </div>
+        <footer class="appFooter">
+          <span>© Zeno</span>
+          <span>
+            <a href="privacy.html">Privacy</a>
+            <span> · </span>
+            <a href="terms.html">Terms</a>
+          </span>
+        </footer>
       </div>
     </div>
 

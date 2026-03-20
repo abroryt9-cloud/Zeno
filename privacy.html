@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Политика конфиденциальности — Zeno</title>
+    <style>
+      :root {
+        --bg: #0f0f0f;
+        --card: #1e1e1e;
+        --accent: #2aabee;
+        --text: #ffffff;
+        --muted: #8e8e93;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        padding: 18px 12px;
+      }
+
+      main {
+        width: 100%;
+        max-width: 860px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      h1 {
+        margin: 0 0 10px 0;
+        font-size: 22px;
+        letter-spacing: 0.02em;
+      }
+
+      h2 {
+        margin: 18px 0 8px 0;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      p, li {
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 13.5px;
+      }
+
+      ul { margin: 8px 0 0 18px; padding: 0; }
+      a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+      .accent { color: var(--accent); font-weight: 800; }
+
+      footer {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12.5px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Политика конфиденциальности мессенджера Zeno</h1>
+      <p>
+        Последнее обновление: <span class="accent">20 марта 2026</span>.
+        Настоящая Политика описывает, какие данные мы собираем, как используем их и какие
+        права вы имеете при использовании мессенджера Zeno.
+      </p>
+
+      <h2>1) Какие данные мы собираем</h2>
+      <ul>
+        <li>
+          <span class="accent">Номер телефона</span>: используется для регистрации и аутентификации по SMS.
+        </li>
+        <li>
+          <span class="accent">Сообщения</span>: текст сообщений, которые вы отправляете/получаете в чатах.
+        </li>
+        <li>
+          <span class="accent">Фото</span>: если вы загрузите изображение профиля (в текущей версии
+            мессенджер не требует загрузки фото, но могут существовать функции профиля/аватаров).
+        </li>
+        <li>
+          <span class="accent">Данные профиля</span> (имя/аватар): используем для отображения в чатах.
+        </li>
+      </ul>
+
+      <h2>2) Как мы используем данные</h2>
+      <ul>
+        <li>Для регистрации и подтверждения номера телефона через Firebase Auth.</li>
+        <li>Для отправки и доставки сообщений через Firestore.</li>
+        <li>Для отображения чатов и сообщений в интерфейсе приложения.</li>
+      </ul>
+
+      <h2>3) С кем мы делимся данными</h2>
+      <p>
+        Мы не продаём и не передаём ваши персональные данные третьим сторонам для их
+        самостоятельного использования.
+        В рамках работы сервиса данные обрабатываются и хранятся инфраструктурой <span class="accent">Firebase / Google</span>,
+        которая обеспечивает аутентификацию (SMS Auth) и хранение/доставку сообщений (Firestore).
+      </p>
+
+      <h2>4) Как мы храним данные и защита</h2>
+      <ul>
+        <li>Данные хранятся в облачных сервисах Firebase.</li>
+        <li>Передача данных осуществляется по защищённым протоколам (HTTPS/TLS).</li>
+        <li>
+          Мы применяем меры безопасности, соответствующие возможностям платформы Firebase и настройкам
+          вашего проекта (включая правила доступа к Firestore).
+        </li>
+      </ul>
+      <p>
+        Дополнительно: конкретные параметры шифрования зависят от конфигурации Firebase и инфраструктуры Google.
+      </p>
+
+      <h2>5) Права пользователей</h2>
+      <ul>
+        <li>
+          <span class="accent">Доступ</span>: вы можете запросить информацию о данных, которые хранятся о вас.
+        </li>
+        <li>
+          <span class="accent">Изменение</span>: вы можете обновить профильные данные, если функционал приложения это поддерживает.
+        </li>
+        <li>
+          <span class="accent">Удаление аккаунта</span>:
+          вы можете удалить аккаунт или связанные данные, обратившись к нам по
+          <a href="mailto:abrorismurzaev@gmail.com">abrorismurzaev@gmail.com</a>
+          или удалив данные в соответствующих коллекциях Firestore (при наличии инструмента в приложении/панели).
+        </li>
+      </ul>
+
+      <h2>6) Изменения политики</h2>
+      <p>
+        Мы можем обновлять настоящую Политику конфиденциальности по мере изменений функционала приложения
+        и требований законодательства. Обновлённая версия будет опубликована на этой странице.
+      </p>
+
+      <h2>Контакты</h2>
+      <p>
+        По вопросам конфиденциальности: <a href="mailto:abrorismurzaev@gmail.com">abrorismurzaev@gmail.com</a>.
+      </p>
+
+      <footer>
+        <span>© Zeno</span>
+        <span>
+          <a href="terms.html">Правила использования</a>
+        </span>
+      </footer>
+    </main>
+  </body>
+</html>
+
