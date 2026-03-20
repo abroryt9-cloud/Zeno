@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeno Messenger</title>
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <!-- Firebase SDK (правильное подключение) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+            }
+        }
+    </script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #0F0F0F;
@@ -26,7 +27,6 @@
             align-items: center;
             padding: 16px;
         }
-        
         .card {
             background: #1E1E1E;
             border-radius: 28px;
@@ -36,7 +36,6 @@
             text-align: center;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
-        
         .logo {
             width: 80px;
             height: 80px;
@@ -50,7 +49,6 @@
             font-weight: bold;
             color: white;
         }
-        
         h1 {
             font-size: 32px;
             font-weight: 600;
@@ -60,13 +58,11 @@
             color: transparent;
             margin-bottom: 8px;
         }
-        
         .subtitle {
             color: #8E8E93;
             font-size: 14px;
             margin-bottom: 32px;
         }
-        
         .google-btn {
             width: 100%;
             padding: 14px;
@@ -83,37 +79,21 @@
             gap: 12px;
             transition: opacity 0.2s;
         }
-        
-        .google-btn:hover {
-            opacity: 0.9;
-        }
-        
+        .google-btn:hover { opacity: 0.9; }
         .user-info {
             margin-top: 20px;
             padding: 16px;
             background: #2C2C2E;
             border-radius: 16px;
         }
-        
         .avatar {
             width: 60px;
             height: 60px;
             border-radius: 50%;
             margin: 0 auto 12px;
         }
-        
-        .user-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-        }
-        
-        .user-email {
-            font-size: 14px;
-            color: #8E8E93;
-            margin-top: 4px;
-        }
-        
+        .user-name { font-size: 18px; font-weight: 600; color: white; }
+        .user-email { font-size: 14px; color: #8E8E93; margin-top: 4px; }
         .logout-btn {
             margin-top: 16px;
             padding: 8px 16px;
@@ -123,10 +103,7 @@
             border-radius: 20px;
             cursor: pointer;
         }
-        
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -135,7 +112,6 @@
         <h1>ZENO</h1>
         <div class="subtitle">Мессенджер будущего</div>
         
-        <!-- Экран входа -->
         <div id="loginScreen">
             <button class="google-btn" id="googleLogin">
                 <svg width="20" height="20" viewBox="0 0 24 24">
@@ -148,7 +124,6 @@
             </button>
         </div>
         
-        <!-- Профиль после входа -->
         <div id="profileScreen" class="hidden">
             <div class="user-info">
                 <img id="userAvatar" class="avatar" src="" alt="">
@@ -159,8 +134,10 @@
         </div>
     </div>
 
-    <script>
-        // Конфигурация Firebase
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyCgb60YBJ9CtE0jz7Z7nKG5V2-NpTaF5yw",
             authDomain: "zeno-offisal.firebaseapp.com",
@@ -170,18 +147,10 @@
             appId: "1:280179393071:web:227a3806f74cd59e04fcda"
         };
         
-        // Инициализация Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
         
-        // Настройка Google провайдера
-        const provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({
-            'login_hint': 'user@example.com'
-        });
-        
-        // Элементы DOM
         const loginScreen = document.getElementById('loginScreen');
         const profileScreen = document.getElementById('profileScreen');
         const googleLoginBtn = document.getElementById('googleLogin');
@@ -190,52 +159,36 @@
         const userName = document.getElementById('userName');
         const userEmail = document.getElementById('userEmail');
         
-        // Вход через Google
         googleLoginBtn.onclick = () => {
-            auth.signInWithPopup(provider)
+            signInWithPopup(auth, provider)
                 .then((result) => {
                     const user = result.user;
-                    saveUserToFirestore(user);
-                    showProfile(user);
+                    loginScreen.classList.add('hidden');
+                    profileScreen.classList.remove('hidden');
+                    userAvatar.src = user.photoURL || 'https://via.placeholder.com/60';
+                    userName.textContent = user.displayName || 'Пользователь';
+                    userEmail.textContent = user.email;
                 })
                 .catch((error) => {
-                    console.error('Ошибка входа:', error);
+                    console.error('Ошибка:', error);
                     alert('Ошибка: ' + error.message);
                 });
         };
         
-        // Сохранение пользователя в Firestore
-        function saveUserToFirestore(user) {
-            db.collection('users').doc(user.uid).set({
-                name: user.displayName,
-                email: user.email,
-                photoURL: user.photoURL,
-                lastLogin: new Date()
-            }, { merge: true });
-        }
-        
-        // Показать профиль
-        function showProfile(user) {
-            userAvatar.src = user.photoURL || 'https://via.placeholder.com/60';
-            userName.textContent = user.displayName || 'Пользователь';
-            userEmail.textContent = user.email;
-            
-            loginScreen.classList.add('hidden');
-            profileScreen.classList.remove('hidden');
-        }
-        
-        // Выход
         logoutBtn.onclick = () => {
-            auth.signOut().then(() => {
+            signOut(auth).then(() => {
                 loginScreen.classList.remove('hidden');
                 profileScreen.classList.add('hidden');
             });
         };
         
-        // Проверка состояния входа
-        auth.onAuthStateChanged((user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                showProfile(user);
+                loginScreen.classList.add('hidden');
+                profileScreen.classList.remove('hidden');
+                userAvatar.src = user.photoURL || 'https://via.placeholder.com/60';
+                userName.textContent = user.displayName || 'Пользователь';
+                userEmail.textContent = user.email;
             } else {
                 loginScreen.classList.remove('hidden');
                 profileScreen.classList.add('hidden');
@@ -243,4 +196,4 @@
         });
     </script>
 </body>
-</html>
+</html> 
