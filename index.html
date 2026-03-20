@@ -222,6 +222,14 @@
       const SUPPORT_PHONE = "support";
       const SUPPORT_NAME = "Поддержка";
 
+      // Global debug hooks (для GitHub Pages/F12).
+      window.addEventListener("error", (e) => {
+        console.error("[Zeno] window error:", e?.message, e?.error || e);
+      });
+      window.addEventListener("unhandledrejection", (e) => {
+        console.error("[Zeno] unhandled rejection:", e?.reason || e);
+      });
+
       function digitsOnly(s) {
         return String(s || "").replace(/\D/g, "");
       }
@@ -322,17 +330,22 @@
 
       function ensureFirebase() {
         if (!window.firebase) throw new Error("Firebase SDK не загрузился.");
-        if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps || !firebase.apps.length) {
+          console.log("[Zeno] init firebase app");
+          firebase.initializeApp(firebaseConfig);
+        }
         if (!auth) auth = firebase.auth();
         if (!db) db = firebase.firestore();
       }
 
       function getRecaptchaVerifier() {
         const recaptchaContainerEl = document.getElementById("recaptcha-container");
+        console.log("[Zeno] recaptcha container:", recaptchaContainerEl);
         try {
           return new firebase.auth.RecaptchaVerifier(recaptchaContainerEl, { size: "invisible" });
         } catch (e1) {
           // fallback (id string)
+          console.warn("[Zeno] recaptcha verifier fallback:", e1);
           return new firebase.auth.RecaptchaVerifier("recaptcha-container", { size: "invisible" }, auth);
         }
       }
@@ -387,20 +400,26 @@
 
         const digits = digitsOnly(phoneEl.value);
         if (!digits) return;
-
-        ensureFirebase();
-        loginPhoneE164 = toE164FromDigits(digits);
+        console.log("[Zeno] Далее clicked:", { phoneRaw: phoneEl.value, digits });
 
         try {
+          ensureFirebase();
+          loginPhoneE164 = toE164FromDigits(digits);
+          console.log("[Zeno] Firebase ready. loginPhoneE164:", loginPhoneE164);
+
           confirmationResult = null;
           clearCodeInputs();
           setScreen("code");
           focusCodeIndex(0);
 
           const appVerifier = getRecaptchaVerifier();
+          console.log("[Zeno] Sending SMS…");
+
           // signInWithPhoneNumber -> confirmationResult
           confirmationResult = await auth.signInWithPhoneNumber(loginPhoneE164, appVerifier);
+          console.log("[Zeno] SMS sent. confirmationResult:", confirmationResult);
         } catch (e) {
+          console.error("[Zeno] SMS send failed:", e);
           confirmationResult = null;
           showError(
             authErrorCode,
@@ -416,14 +435,17 @@
           setScreen("enter");
           return;
         }
-        ensureFirebase();
+        console.log("[Zeno] Resend clicked. loginPhoneE164:", loginPhoneE164);
         try {
+          ensureFirebase();
           clearCodeInputs();
           setScreen("code");
           focusCodeIndex(0);
           const appVerifier = getRecaptchaVerifier();
           confirmationResult = await auth.signInWithPhoneNumber(loginPhoneE164, appVerifier);
+          console.log("[Zeno] SMS resent. confirmationResult:", confirmationResult);
         } catch (e) {
+          console.error("[Zeno] Resend failed:", e);
           showError(authErrorCode, e?.message || "Не удалось отправить код повторно.");
         }
       });
@@ -439,9 +461,11 @@
 
         const code = getCode();
         try {
+          console.log("[Zeno] Confirm clicked. code:", code);
           const result = await confirmationResult.confirm(code);
           const user = result.user;
           currentPhoneE164 = user?.phoneNumber || loginPhoneE164;
+          console.log("[Zeno] Phone confirmed:", currentPhoneE164);
 
           const name = getUserNameFromPhone(currentPhoneE164);
           userNameEl.textContent = name;
