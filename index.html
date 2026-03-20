@@ -1,649 +1,246 @@
 <!DOCTYPE html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zeno</title>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeno Messenger</title>
+    
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    
     <style>
-      :root { --bg:#0f0f0f; --card:#1e1e1e; --accent:#2aabee; --text:#fff; --muted:#8e8e93; --border:rgba(255,255,255,.08); }
-      * { box-sizing: border-box; }
-      html, body { height: 100%; margin: 0; }
-      body { font-family: ui-sans-serif, system-ui; background: var(--bg); color: var(--text); display:flex; justify-content:center; align-items:center; padding:12px; }
-      .app { width:100%; max-width:980px; height:min(100vh - 24px, 860px); }
-      .shell { height:100%; border-radius:18px; overflow:hidden; background: var(--card); border:1px solid var(--border); display:flex; flex-direction:column; }
-      .screen { display:none; flex:1; min-height:0; }
-      .screen.active { display:flex; flex-direction:column; }
-      .appFooter {
-        padding: 10px 14px;
-        border-top: 1px solid var(--border);
-        color: var(--muted);
-        font-size: 12.5px;
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-      }
-      .appFooter a {
-        color: rgba(42, 171, 238, 0.95);
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-      .appFooter a:hover { filter: brightness(1.1); }
-      .auth { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:22px; }
-      .logoTitle { margin:0; font-size:34px; font-weight:950; letter-spacing:.14em; text-align:center; }
-      .authSub { margin-top:8px; color: var(--muted); font-size:13px; text-align:center; }
-
-      .logoCircleWrap { margin-bottom:14px; display:flex; justify-content:center; }
-      .logoCircle {
-        width:92px;
-        height:92px;
-        border-radius:50%;
-        background: linear-gradient(135deg, rgba(124,58,237,1), var(--accent));
-        position:relative;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        box-shadow: 0 18px 45px rgba(42,171,238,0.18);
-        overflow:hidden;
-        animation: floatLogo 3s ease-in-out infinite;
-      }
-      .logoCircle::before {
-        content:"";
-        position:absolute;
-        inset:-60%;
-        background: conic-gradient(from 90deg, rgba(124,58,237,0.85), rgba(42,171,238,0.95), rgba(124,58,237,0.85));
-        animation: spinLogo 4s linear infinite;
-        opacity:0.75;
-      }
-      .logoCircle::after {
-        content:"";
-        position:absolute;
-        inset:0;
-        background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 45%);
-        opacity:0.85;
-        pointer-events:none;
-      }
-      .logoZ {
-        position:relative;
-        font-size:44px;
-        font-weight:1000;
-        color:#041018;
-        text-shadow: 0 1px 0 rgba(255,255,255,0.25);
-        animation: popLogo 260ms ease-out both;
-      }
-      @keyframes floatLogo { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-      @keyframes spinLogo { to { transform: rotate(360deg); } }
-      @keyframes popLogo { from { transform: scale(0.92); opacity:0.6; } to { transform: scale(1); opacity:1; } }
-      .formCard { width:min(440px,100%); border-radius:16px; padding:18px; background: rgba(0,0,0,.22); border:1px solid var(--border); }
-      label { display:block; font-size:13px; color:var(--muted); margin-bottom:8px; }
-      .input { width:100%; height:46px; border-radius:14px; border:1px solid var(--border); background: rgba(0,0,0,.35); padding:0 14px; font-size:15px; color:var(--text); outline:none; }
-      .input:focus { box-shadow:0 0 0 5px rgba(42,171,238,.15); border-color: rgba(42,171,238,.55); }
-      .btn { width:100%; height:46px; border-radius:14px; border:none; cursor:pointer; font-weight:950; font-size:15px; background:var(--accent); color:#041018; transition: transform 100ms ease, filter 100ms ease; }
-      .btn:active { transform: translateY(1px); }
-      .btn:disabled { opacity:.48; background: rgba(42,171,238,.35); cursor:not-allowed; color:var(--text); }
-      .hint { margin-top:10px; text-align:center; color:var(--muted); font-size:12.5px; }
-      .error { margin-top:12px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,77,79,.35); background: rgba(255,77,79,.12); display:none; color:#fff; font-size:13px; }
-      .error.active { display:block; }
-      .codeRow { display:flex; justify-content:center; gap:10px; margin-top:10px; margin-bottom:12px; }
-      .codeInput { width:50px; height:60px; border-radius:14px; border:1px solid var(--border); background: rgba(0,0,0,.35); color:var(--text); text-align:center; font-size:20px; font-weight:800; outline:none; }
-      .codeInput:focus { box-shadow:0 0 0 5px rgba(42,171,238,.15); border-color: rgba(42,171,238,.55); }
-      .resend { margin-top:10px; text-align:center; }
-      .linkBtn { border:none; background:none; color: rgba(42,171,238,.95); font-weight:900; cursor:pointer; text-decoration: underline; text-underline-offset:3px; padding:0; }
-      .chat { flex:1; display:flex; flex-direction:column; min-height:0; }
-      .topBar { height:64px; display:flex; align-items:center; gap:12px; padding:0 14px; border-bottom:1px solid var(--border); }
-      .avatar { width:38px; height:38px; border-radius:50%; background: linear-gradient(135deg, rgba(42,171,238,.95), rgba(124,58,237,.55)); display:flex; align-items:center; justify-content:center; font-weight:950; color:#041018; }
-      .topMeta { min-width:0; display:flex; flex-direction:column; }
-      .userName { font-weight:950; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      .userSub { color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      .messages { flex:1; padding:14px; overflow-y:auto; background: rgba(0,0,0,.08); }
-      .msgRow { display:flex; align-items:flex-end; gap:10px; margin:8px 0; }
-      .msgRow.me { justify-content:flex-end; }
-      .msgRow.them { justify-content:flex-start; }
-      .msgBubbleWrap { display:flex; flex-direction:column; gap:6px; max-width:78%; }
-      .msgRow.me .msgBubbleWrap { align-items:flex-end; }
-      .msgRow.them .msgBubbleWrap { align-items:flex-start; }
-      .msgSenderName { font-size:11px; font-weight:900; color: var(--muted); padding:0 2px; }
-      .msgRow.me .msgSenderName { color: rgba(42,171,238,0.95); }
-      .msgAvatar {
-        width:30px;
-        height:30px;
-        border-radius:50%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-weight:1000;
-        font-size:12px;
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.04);
-        flex-shrink:0;
-      }
-      .msgAvatar.me {
-        background: linear-gradient(135deg, rgba(42,171,238,0.95), rgba(124,58,237,0.55));
-        color:#041018;
-        border-color: rgba(42,171,238,0.35);
-      }
-      .bubble { padding:10px 12px; border-radius:16px; border:1px solid var(--border); font-size:14px; line-height:1.25; white-space:pre-wrap; word-break:break-word; }
-      .bubble.me { background: rgba(42,171,238,.95); border-color: rgba(42,171,238,.35); color:#041018; }
-      .bubble.them { background: rgba(30,30,30,.95); }
-
-      .messageEnter { animation: messageIn 220ms ease-out both; }
-      @keyframes messageIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
-      .composer { padding:12px 14px; border-top:1px solid var(--border); display:flex; gap:10px; align-items:flex-end; background: rgba(0,0,0,.15); }
-      .composerInput { flex:1; border-radius:16px; border:1px solid var(--border); background: rgba(0,0,0,.45); color:var(--text); padding:12px; font-size:14px; outline:none; resize:none; min-height:46px; max-height:120px; }
-      .sendBtn { width:46px; height:46px; border-radius:16px; border:none; cursor:pointer; background:var(--accent); color:#041018; font-weight:950; flex-shrink:0; transition: transform 100ms ease, filter 120ms ease; }
-      .sendBtn:active { transform: translateY(1px); }
-      @media(max-width:520px){ .app{height:100vh; max-width:100%; border-radius:0;} .shell{border-radius:0;} .codeRow{gap:6px;} .codeInput{width:50px;height:60px;} }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #0F0F0F;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        
+        .card {
+            background: #1E1E1E;
+            border-radius: 28px;
+            padding: 40px 24px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #2AABEE 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #2AABEE 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #8E8E93;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        
+        .google-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #1E1E1E;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: opacity 0.2s;
+        }
+        
+        .google-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            margin-top: 20px;
+            padding: 16px;
+            background: #2C2C2E;
+            border-radius: 16px;
+        }
+        
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .user-email {
+            font-size: 14px;
+            color: #8E8E93;
+            margin-top: 4px;
+        }
+        
+        .logout-btn {
+            margin-top: 16px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #2AABEE;
+            color: #2AABEE;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .hidden {
+            display: none;
+        }
     </style>
-  </head>
-  <body>
-    <div class="app">
-      <div class="shell">
-        <div id="screen-enter" class="screen active">
-          <div class="auth">
-            <div class="logoCircleWrap">
-              <div class="logoCircle" aria-hidden="true">
-                <span class="logoZ">Z</span>
-              </div>
-            </div>
-            <h1 class="logoTitle">ZENO</h1>
-            <div class="authSub">Вход по номеру телефона</div>
-            <div class="formCard">
-              <label for="phone">Номер телефона</label>
-              <input id="phone" class="input" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 999 123-45-67" />
-              <div style="margin-top:12px;">
-                <button id="btnNext" class="btn" type="button" disabled>Далее</button>
-              </div>
-              <div class="hint">Мы отправим SMS с кодом подтверждения.</div>
-              <div class="error" id="authErrorEnter"></div>
-            </div>
-          </div>
+</head>
+<body>
+    <div class="card" id="app">
+        <div class="logo">Z</div>
+        <h1>ZENO</h1>
+        <div class="subtitle">Мессенджер будущего</div>
+        
+        <!-- Экран входа -->
+        <div id="loginScreen">
+            <button class="google-btn" id="googleLogin">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Войти через Google
+            </button>
         </div>
-
-        <div id="screen-code" class="screen">
-          <div class="auth">
-            <div class="logoCircleWrap">
-              <div class="logoCircle" aria-hidden="true">
-                <span class="logoZ">Z</span>
-              </div>
+        
+        <!-- Профиль после входа -->
+        <div id="profileScreen" class="hidden">
+            <div class="user-info">
+                <img id="userAvatar" class="avatar" src="" alt="">
+                <div id="userName" class="user-name"></div>
+                <div id="userEmail" class="user-email"></div>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
             </div>
-            <h1 class="logoTitle">ZENO</h1>
-            <div class="authSub">Введите код из SMS</div>
-            <div class="formCard">
-              <label for="codeInputsWrap">Код подтверждения</label>
-              <div class="codeRow" id="codeInputsWrap">
-                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-              </div>
-              <div style="margin-top:12px;">
-                <button id="btnConfirm" class="btn" type="button" disabled>Подтвердить</button>
-              </div>
-              <div class="resend">
-                <button id="resendLink" class="linkBtn" type="button">Не пришел код? Отправить снова</button>
-              </div>
-              <div class="error" id="authErrorCode"></div>
-            </div>
-          </div>
         </div>
-
-        <div id="screen-main" class="screen">
-          <div class="chat">
-            <div class="topBar">
-              <div class="avatar" id="avatar">U</div>
-              <div class="topMeta">
-                <div class="userName" id="userName">Пользователь</div>
-                <div class="userSub" id="userSub">Zeno • Чат</div>
-              </div>
-            </div>
-            <div class="messages" id="messages"></div>
-            <div class="composer">
-              <textarea id="messageInput" class="composerInput" rows="1" placeholder="Сообщение…"></textarea>
-              <button id="sendBtn" class="sendBtn" type="button" aria-label="Отправить">↗</button>
-            </div>
-          </div>
-        </div>
-        <footer class="appFooter">
-          <span>© Zeno</span>
-          <span>
-            <a href="privacy.html">Privacy</a>
-            <span> · </span>
-            <a href="terms.html">Terms</a>
-          </span>
-        </footer>
-      </div>
     </div>
 
-    <div id="recaptcha-container" style="display:none"></div>
-
     <script>
-      // Firebase config (exactly as requested)
-      const firebaseConfig = {
-        apiKey: "AIzaSyCgb60YBJ9CtE0jz7Z7nKG5V2-NpTaF5yw",
-        authDomain: "zeno-offisal.firebaseapp.com",
-        projectId: "zeno-offisal",
-        storageBucket: "zeno-offisal.firebasestorage.app",
-        messagingSenderId: "280179393071",
-        appId: "1:280179393071:web:227a3806f74cd59e04fcda",
-      };
+        // Конфигурация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgb60YBJ9CtE0jz7Z7nKG5V2-NpTaF5yw",
+            authDomain: "zeno-offisal.firebaseapp.com",
+            projectId: "zeno-offisal",
+            storageBucket: "zeno-offisal.firebasestorage.app",
+            messagingSenderId: "280179393071",
+            appId: "1:280179393071:web:227a3806f74cd59e04fcda"
+        };
+        
+        // Инициализация Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Настройка Google провайдера
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({
+            'login_hint': 'user@example.com'
+        });
+        
+        // Элементы DOM
+        const loginScreen = document.getElementById('loginScreen');
+        const profileScreen = document.getElementById('profileScreen');
+        const googleLoginBtn = document.getElementById('googleLogin');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        
+        // Вход через Google
+        googleLoginBtn.onclick = () => {
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+                    saveUserToFirestore(user);
+                    showProfile(user);
+                })
+                .catch((error) => {
+                    console.error('Ошибка входа:', error);
+                    alert('Ошибка: ' + error.message);
+                });
+        };
+        
+        // Сохранение пользователя в Firestore
+        function saveUserToFirestore(user) {
+            db.collection('users').doc(user.uid).set({
+                name: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+                lastLogin: new Date()
+            }, { merge: true });
+        }
+        
+        // Показать профиль
+        function showProfile(user) {
+            userAvatar.src = user.photoURL || 'https://via.placeholder.com/60';
+            userName.textContent = user.displayName || 'Пользователь';
+            userEmail.textContent = user.email;
+            
+            loginScreen.classList.add('hidden');
+            profileScreen.classList.remove('hidden');
+        }
+        
+        // Выход
+        logoutBtn.onclick = () => {
+            auth.signOut().then(() => {
+                loginScreen.classList.remove('hidden');
+                profileScreen.classList.add('hidden');
+            });
+        };
+        
+        // Проверка состояния входа
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                showProfile(user);
+            } else {
+                loginScreen.classList.remove('hidden');
+                profileScreen.classList.add('hidden');
+            }
+        });
     </script>
-
-    <script>
-      let auth = null;
-      let db = null;
-
-      let confirmationResult = null;
-      let loginPhoneE164 = "";
-      let currentPhoneE164 = "";
-      let unsubMessages = null;
-      let knownMessageIds = new Set();
-
-      const SUPPORT_PHONE = "support";
-      const SUPPORT_NAME = "Поддержка";
-
-      // Global debug hooks (для GitHub Pages/F12).
-      window.addEventListener("error", (e) => {
-        console.error("[Zeno] window error:", e?.message, e?.error || e);
-      });
-      window.addEventListener("unhandledrejection", (e) => {
-        console.error("[Zeno] unhandled rejection:", e?.reason || e);
-      });
-
-      function digitsOnly(s) {
-        return String(s || "").replace(/\D/g, "");
-      }
-
-      function toE164FromDigits(d) {
-        if (!d) return "";
-        if (d.length === 11 && d.startsWith("7")) return "+" + d;
-        if (d.length === 10) return "+7" + d;
-        return "+" + d.replace(/^\+/, "");
-      }
-
-      function setScreen(which) {
-        document.getElementById("screen-enter").classList.toggle("active", which === "enter");
-        document.getElementById("screen-code").classList.toggle("active", which === "code");
-        document.getElementById("screen-main").classList.toggle("active", which === "main");
-      }
-
-      function showError(el, text) {
-        el.textContent = text || "";
-        el.classList.toggle("active", Boolean(text));
-      }
-
-      function hideError(el) {
-        el.textContent = "";
-        el.classList.remove("active");
-      }
-
-      function conversationIdFor(a, b) {
-        const pair = [String(a || ""), String(b || "")].sort();
-        return "c_" + pair[0] + "_" + pair[1];
-      }
-
-      function escapeHtml(s) {
-        return String(s || "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function autosizeTextarea(el) {
-        el.style.height = "auto";
-        el.style.height = el.scrollHeight + "px";
-      }
-
-      // --- DOM ---
-      const phoneEl = document.getElementById("phone");
-      const btnNext = document.getElementById("btnNext");
-      const btnConfirm = document.getElementById("btnConfirm");
-      const resendLink = document.getElementById("resendLink");
-
-      const authErrorEnter = document.getElementById("authErrorEnter");
-      const authErrorCode = document.getElementById("authErrorCode");
-
-      const codeInputs = Array.from(document.querySelectorAll("#codeInputsWrap input.codeInput"));
-      const codeInputsWrap = document.getElementById("codeInputsWrap");
-
-      const avatarEl = document.getElementById("avatar");
-      const userNameEl = document.getElementById("userName");
-      const userSubEl = document.getElementById("userSub");
-      const messagesEl = document.getElementById("messages");
-      const messageInputEl = document.getElementById("messageInput");
-      const sendBtnEl = document.getElementById("sendBtn");
-
-      function checkCodeComplete() {
-        const code = codeInputs.map((x) => x.value).join("");
-        const ok = /^\d{6}$/.test(code);
-        btnConfirm.disabled = !ok;
-        return ok;
-      }
-
-      function getCode() {
-        return codeInputs.map((x) => x.value).join("");
-      }
-
-      function clearCodeInputs() {
-        codeInputs.forEach((x) => (x.value = ""));
-        btnConfirm.disabled = true;
-      }
-
-      function focusCodeIndex(i) {
-        const idx = Math.max(0, Math.min(i, codeInputs.length - 1));
-        codeInputs[idx].focus();
-        codeInputs[idx].select?.();
-      }
-
-      function getUserNameFromPhone(phoneE164) {
-        const digits = digitsOnly(phoneE164);
-        const last4 = digits.slice(-4);
-        return last4 ? "Пользователь " + last4 : "Пользователь";
-      }
-
-      function getAvatarLetter(name) {
-        const s = String(name || "U").trim();
-        return s ? s.charAt(0).toUpperCase() : "U";
-      }
-
-      function ensureFirebase() {
-        if (!window.firebase) throw new Error("Firebase SDK не загрузился.");
-        if (!firebase.apps || !firebase.apps.length) {
-          console.log("[Zeno] init firebase app");
-          firebase.initializeApp(firebaseConfig);
-        }
-        if (!auth) auth = firebase.auth();
-        if (!db) db = firebase.firestore();
-      }
-
-      function getRecaptchaVerifier() {
-        const recaptchaContainerEl = document.getElementById("recaptcha-container");
-        console.log("[Zeno] recaptcha container:", recaptchaContainerEl);
-        try {
-          return new firebase.auth.RecaptchaVerifier(recaptchaContainerEl, { size: "invisible" });
-        } catch (e1) {
-          // fallback (id string)
-          console.warn("[Zeno] recaptcha verifier fallback:", e1);
-          return new firebase.auth.RecaptchaVerifier("recaptcha-container", { size: "invisible" }, auth);
-        }
-      }
-
-      // --- OTP UX ---
-      codeInputs.forEach((input, idx) => {
-        input.addEventListener("input", () => {
-          const d = digitsOnly(input.value);
-          if (!d) {
-            input.value = "";
-            checkCodeComplete();
-            return;
-          }
-          input.value = d[d.length - 1]; // keep only last digit
-          if (idx < codeInputs.length - 1) focusCodeIndex(idx + 1);
-          checkCodeComplete();
-        });
-
-        input.addEventListener("keydown", (e) => {
-          if (e.key !== "Backspace") return;
-          e.preventDefault();
-          input.value = "";
-          if (idx > 0) focusCodeIndex(idx - 1);
-          checkCodeComplete();
-        });
-      });
-
-      codeInputsWrap.addEventListener("paste", (e) => {
-        const text = e.clipboardData ? e.clipboardData.getData("text") : "";
-        const d = digitsOnly(text).slice(0, 6);
-        if (!d) return;
-        e.preventDefault();
-        clearCodeInputs();
-        d.split("").forEach((ch, i) => {
-          if (codeInputs[i]) codeInputs[i].value = ch;
-        });
-        checkCodeComplete();
-        focusCodeIndex(Math.min(d.length - 1, 5));
-      });
-
-      // --- AUTH: send code ---
-      phoneEl.addEventListener("input", () => {
-        const d = digitsOnly(phoneEl.value);
-        btnNext.disabled = d.length === 0;
-        hideError(authErrorEnter);
-      });
-      btnNext.disabled = true;
-
-      btnNext.addEventListener("click", async () => {
-        hideError(authErrorEnter);
-        hideError(authErrorCode);
-
-        const digits = digitsOnly(phoneEl.value);
-        if (!digits) return;
-        console.log("[Zeno] Далее clicked:", { phoneRaw: phoneEl.value, digits });
-
-        try {
-          ensureFirebase();
-          loginPhoneE164 = toE164FromDigits(digits);
-          console.log("[Zeno] Firebase ready. loginPhoneE164:", loginPhoneE164);
-
-          confirmationResult = null;
-          clearCodeInputs();
-          setScreen("code");
-          focusCodeIndex(0);
-
-          const appVerifier = getRecaptchaVerifier();
-          console.log("[Zeno] Sending SMS…");
-
-          // signInWithPhoneNumber -> confirmationResult
-          confirmationResult = await auth.signInWithPhoneNumber(loginPhoneE164, appVerifier);
-          console.log("[Zeno] SMS sent. confirmationResult:", confirmationResult);
-        } catch (e) {
-          console.error("[Zeno] SMS send failed:", e);
-          confirmationResult = null;
-          showError(
-            authErrorCode,
-            e?.message || "Не удалось отправить код. Проверьте Phone Auth и настройки reCAPTCHA."
-          );
-        }
-      });
-
-      // resend
-      resendLink.addEventListener("click", async () => {
-        hideError(authErrorCode);
-        if (!loginPhoneE164) {
-          setScreen("enter");
-          return;
-        }
-        console.log("[Zeno] Resend clicked. loginPhoneE164:", loginPhoneE164);
-        try {
-          ensureFirebase();
-          clearCodeInputs();
-          setScreen("code");
-          focusCodeIndex(0);
-          const appVerifier = getRecaptchaVerifier();
-          confirmationResult = await auth.signInWithPhoneNumber(loginPhoneE164, appVerifier);
-          console.log("[Zeno] SMS resent. confirmationResult:", confirmationResult);
-        } catch (e) {
-          console.error("[Zeno] Resend failed:", e);
-          showError(authErrorCode, e?.message || "Не удалось отправить код повторно.");
-        }
-      });
-
-      // --- AUTH: confirm code ---
-      btnConfirm.addEventListener("click", async () => {
-        hideError(authErrorCode);
-        if (!checkCodeComplete()) return;
-        if (!confirmationResult) {
-          showError(authErrorCode, "Сессия подтверждения устарела. Отправьте код снова.");
-          return;
-        }
-
-        const code = getCode();
-        try {
-          console.log("[Zeno] Confirm clicked. code:", code);
-          const result = await confirmationResult.confirm(code);
-          const user = result.user;
-          currentPhoneE164 = user?.phoneNumber || loginPhoneE164;
-          console.log("[Zeno] Phone confirmed:", currentPhoneE164);
-
-          const name = getUserNameFromPhone(currentPhoneE164);
-          userNameEl.textContent = name;
-          avatarEl.textContent = getAvatarLetter(name);
-          userSubEl.textContent = "Zeno • Чат";
-
-          setScreen("main");
-          await startChat();
-          setTimeout(() => messageInputEl.focus(), 0);
-        } catch (e) {
-          showError(authErrorCode, e?.message || "Код неверный или подтверждение не удалось.");
-        }
-      });
-
-      // --- Firestore realtime chat ---
-      async function ensureSupportConversation(convId) {
-        const convRef = db.collection("conversations").doc(convId);
-        const doc = await convRef.get();
-        if (!doc.exists) {
-          await convRef.set({
-            participants: [currentPhoneE164, SUPPORT_PHONE],
-            title: SUPPORT_NAME,
-            lastMessageText: "",
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          });
-        }
-
-        const seed = await convRef.collection("messages").limit(1).get();
-        if (seed.empty) {
-          await convRef.collection("messages").add({
-            from: SUPPORT_PHONE,
-            text: "Привет! Я поддержка Zeno. Напишите сообщение ниже.",
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          });
-        }
-      }
-
-      function renderMessages(items) {
-        messagesEl.innerHTML = "";
-
-        if (!items || items.length === 0) {
-          messagesEl.innerHTML =
-            '<div style="color: var(--muted); padding: 20px 0; text-align:center;">Сообщений пока нет</div>';
-          return;
-        }
-
-        for (const m of items) {
-          const messageId = m.id;
-          const from = m.from || "";
-          const isMe = from === currentPhoneE164;
-          const text = String(m.text || "");
-
-          const senderName = isMe ? getUserNameFromPhone(currentPhoneE164) : SUPPORT_NAME;
-          const senderLetter = getAvatarLetter(senderName);
-
-          const row = document.createElement("div");
-          row.className = "msgRow " + (isMe ? "me" : "them");
-
-          const avatar = document.createElement("div");
-          avatar.className = "msgAvatar " + (isMe ? "me" : "them");
-          avatar.textContent = senderLetter;
-
-          const bubbleWrap = document.createElement("div");
-          bubbleWrap.className = "msgBubbleWrap";
-
-          const nameEl = document.createElement("div");
-          nameEl.className = "msgSenderName";
-          nameEl.textContent = senderName;
-
-          const bubble = document.createElement("div");
-          bubble.className = "bubble " + (isMe ? "me" : "them");
-          bubble.textContent = text;
-
-          bubbleWrap.appendChild(nameEl);
-          bubbleWrap.appendChild(bubble);
-
-          // Avatar placement: me -> right, them -> left
-          if (isMe) {
-            row.appendChild(bubbleWrap);
-            row.appendChild(avatar);
-          } else {
-            row.appendChild(avatar);
-            row.appendChild(bubbleWrap);
-          }
-
-          // Animate only new messages
-          if (messageId && !knownMessageIds.has(messageId)) {
-            row.classList.add("messageEnter");
-          }
-
-          messagesEl.appendChild(row);
-
-          if (messageId) knownMessageIds.add(messageId);
-        }
-
-        requestAnimationFrame(() => {
-          messagesEl.scrollTop = messagesEl.scrollHeight;
-        });
-      }
-
-      async function startChat() {
-        // unsubscribe old listener
-        if (unsubMessages) {
-          try { unsubMessages(); } catch (_) {}
-          unsubMessages = null;
-        }
-
-        const convId = conversationIdFor(currentPhoneE164, SUPPORT_PHONE);
-        await ensureSupportConversation(convId);
-
-        const convRef = db.collection("conversations").doc(convId);
-        unsubMessages = convRef
-          .collection("messages")
-          .orderBy("createdAt")
-          .limit(100)
-          .onSnapshot((snap) => {
-            const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            renderMessages(items);
-          });
-      }
-
-      async function sendMessage() {
-        const text = String(messageInputEl.value || "").trim();
-        if (!text) return;
-        if (!currentPhoneE164) return;
-
-        const convId = conversationIdFor(currentPhoneE164, SUPPORT_PHONE);
-        const convRef = db.collection("conversations").doc(convId);
-        messageInputEl.value = "";
-        autosizeTextarea(messageInputEl);
-
-        const createdAt = firebase.firestore.FieldValue.serverTimestamp();
-        await convRef.collection("messages").add({ from: currentPhoneE164, text, createdAt });
-        await convRef.set({ lastMessageText: text, updatedAt: createdAt }, { merge: true });
-      }
-
-      sendBtnEl.addEventListener("click", () => {
-        sendMessage().catch((e) => showError(authErrorCode, e?.message || "Не удалось отправить сообщение."));
-      });
-
-      messageInputEl.addEventListener("input", () => autosizeTextarea(messageInputEl));
-      messageInputEl.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage().catch((err) => showError(authErrorCode, err?.message || "Не удалось отправить сообщение."));
-        }
-      });
-
-      // initial states
-      btnConfirm.disabled = true;
-      hideError(authErrorEnter);
-      hideError(authErrorCode);
-    </script>
-  </body>
+</body>
 </html>
-
