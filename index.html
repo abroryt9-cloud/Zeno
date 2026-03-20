@@ -1,409 +1,546 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zeno</title>
-  <style>
-    :root {
-      --bg1: #7c3aed;
-      --bg2: #2563eb;
-      --card: rgba(255, 255, 255, 0.92);
-      --text: #0f172a;
-      --muted: rgba(15, 23, 42, 0.65);
-      --ring: rgba(99, 102, 241, 0.35);
-      --primary1: #7c3aed;
-      --primary2: #2563eb;
-      --success: #16a34a;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zeno</title>
+    <style>
+      :root {
+        --bg1: #7c3aed;
+        --bg2: #2563eb;
+        --card: rgba(255, 255, 255, 0.92);
+        --text: #0f172a;
+        --muted: rgba(15, 23, 42, 0.65);
+        --ring: rgba(99, 102, 241, 0.35);
+        --primary1: #7c3aed;
+        --primary2: #2563eb;
+        --success: #16a34a;
+      }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
-        "Segoe UI Emoji";
-      color: var(--text);
-      background: radial-gradient(1200px circle at 20% 10%, rgba(124, 58, 237, 0.45), transparent 55%),
-        radial-gradient(1000px circle at 80% 20%, rgba(37, 99, 235, 0.45), transparent 52%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
-      display: grid;
-      place-items: center;
-      padding: 18px;
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    .app {
-      width: 100%;
-      max-width: 440px;
-    }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
 
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      border-radius: 22px;
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
-      overflow: hidden;
-      max-height: calc(100vh - 36px);
-      backdrop-filter: blur(10px);
-    }
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: radial-gradient(1200px circle at 20% 10%, rgba(124, 58, 237, 0.45), transparent 55%),
+          radial-gradient(1000px circle at 80% 20%, rgba(37, 99, 235, 0.45), transparent 52%),
+          linear-gradient(135deg, var(--bg1), var(--bg2));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 14px;
+      }
 
-    .cardHeader {
-      padding: 20px 18px 14px 18px;
-      text-align: center;
-    }
+      .app {
+        width: 100%;
+        max-width: 460px;
+      }
 
-    .brand {
-      margin: 0;
-      letter-spacing: 0.14em;
-      font-weight: 900;
-      font-size: 22px;
-    }
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: 22px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        max-height: calc(100vh - 28px);
+        display: flex;
+        flex-direction: column;
+      }
 
-    .subtitle {
-      margin: 8px 0 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
+      .cardHeader {
+        padding: 18px 18px 10px 18px;
+        text-align: center;
+      }
 
-    .content {
-      padding: 14px 18px 16px 18px;
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-    }
+      .brand {
+        margin: 0;
+        letter-spacing: 0.14em;
+        font-weight: 900;
+        font-size: 22px;
+      }
 
-    .screen {
-      display: none;
-      animation: fadeIn 180ms ease-out;
-    }
-    .screen.active { display: block; }
+      .subtitle {
+        margin: 8px 0 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+      .content {
+        padding: 12px 18px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
 
-    .fieldLabel {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
+      .screen {
+        display: none;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .screen.active {
+        display: flex;
+        animation: fadeIn 140ms ease-out;
+      }
 
-    .input {
-      width: 100%;
-      height: 46px;
-      border-radius: 14px;
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      background: rgba(255, 255, 255, 0.85);
-      padding: 0 14px;
-      font-size: 15px;
-      outline: none;
-      transition: box-shadow 120ms ease, border-color 120ms ease;
-    }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    .input:focus {
-      border-color: rgba(99, 102, 241, 0.4);
-      box-shadow: 0 0 0 5px var(--ring);
-    }
+      .fieldLabel {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
 
-    .btn {
-      width: 100%;
-      height: 46px;
-      margin-top: 12px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      color: white;
-      font-weight: 700;
-      font-size: 15px;
-      background: linear-gradient(135deg, var(--primary1), var(--primary2));
-      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.22);
-      transition: transform 100ms ease, filter 100ms ease, opacity 120ms ease;
-    }
+      .input {
+        width: 100%;
+        height: 46px;
+        border-radius: 14px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+        padding: 0 14px;
+        font-size: 15px;
+        outline: none;
+        transition: box-shadow 120ms ease, border-color 120ms ease;
+      }
 
-    .btn:active { transform: translateY(1px); }
-    .btn:disabled {
-      cursor: not-allowed;
-      opacity: 0.55;
-      filter: grayscale(10%);
-    }
+      .input:focus {
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 0 0 5px var(--ring);
+      }
 
-    .codeRow {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 4px;
-      flex-wrap: nowrap;
-    }
+      .btn {
+        width: 100%;
+        height: 46px;
+        border-radius: 14px;
+        border: none;
+        cursor: pointer;
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        background: linear-gradient(135deg, var(--primary1), var(--primary2));
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.22);
+        transition: opacity 120ms ease, filter 120ms ease, transform 100ms ease;
+      }
 
-    .codeInput {
-      width: 48px;
-      height: 56px;
-      text-align: center;
-      font-size: 19px;
-      border-radius: 14px;
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      background: rgba(255, 255, 255, 0.85);
-      outline: none;
-      transition: box-shadow 120ms ease, border-color 120ms ease;
-    }
+      .btn:active {
+        transform: translateY(1px);
+      }
 
-    .codeInput:focus {
-      border-color: rgba(99, 102, 241, 0.4);
-      box-shadow: 0 0 0 5px var(--ring);
-    }
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+        filter: grayscale(10%);
+        background: #9aa3b2;
+        box-shadow: none;
+      }
 
-    .hint {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12.5px;
-      text-align: center;
-      line-height: 1.25;
-    }
+      .btnRow {
+        margin-top: 12px;
+      }
 
-    .welcome {
-      text-align: center;
-      padding: 8px 4px 6px 4px;
-    }
+      .codeWrap {
+        margin-top: 2px;
+      }
 
-    .welcomeTitle {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 900;
-    }
+      .codeRow {
+        display: flex;
+        justify-content: space-between;
+        gap: 4px;
+      }
 
-    .welcomeBadge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(22, 163, 74, 0.25);
-      background: rgba(22, 163, 74, 0.08);
-      color: var(--success);
-      font-weight: 700;
-      font-size: 13px;
-    }
+      .codeInput {
+        width: 50px;
+        height: 60px;
+        border-radius: 16px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+        outline: none;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+        transition: box-shadow 120ms ease, border-color 120ms ease;
+      }
 
-    @media (min-width: 800px) {
-      .app { max-width: 520px; }
-      .cardHeader { padding-top: 26px; }
-    }
+      .codeInput:focus {
+        border-color: rgba(99, 102, 241, 0.45);
+        box-shadow: 0 0 0 5px var(--ring);
+      }
 
-    @media (max-width: 420px) {
-      body { padding: 12px; }
-      .cardHeader { padding-left: 14px; padding-right: 14px; }
-      .cardHeader { padding-top: 16px; padding-bottom: 10px; }
-      .content { padding-left: 14px; padding-right: 14px; }
-      .content { padding-top: 12px; padding-bottom: 12px; }
-      .subtitle { font-size: 12.5px; }
-      .btn { height: 44px; }
-    }
+      .hint {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12.5px;
+        text-align: center;
+        line-height: 1.25;
+      }
 
-    #screen-code.active {
-      display: flex;
-      flex-direction: column;
-    }
+      .resend {
+        margin-top: 12px;
+        text-align: center;
+      }
 
-    #screen-code .fieldLabel {
-      margin-bottom: 6px;
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <div class="card" role="application" aria-label="Zeno web">
-      <div class="cardHeader">
-        <h1 class="brand">ZENO</h1>
-        <p class="subtitle" id="subtitleText">Вход по номеру телефона</p>
-      </div>
+      .linkBtn {
+        background: none;
+        border: none;
+        color: rgba(37, 99, 235, 0.9);
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0;
+        text-decoration: none;
+      }
 
-      <div class="content">
-        <div class="screen active" id="screen-enter">
-          <label class="fieldLabel" for="phone">Номер телефона</label>
-          <input
-            class="input"
-            id="phone"
-            type="tel"
-            inputmode="tel"
-            autocomplete="tel"
-            placeholder="+7 999 123-45-67"
-          />
-          <button class="btn" id="btnNext" type="button" disabled>Далее</button>
-          <div class="hint">Укажите номер, чтобы мы отправили код подтверждения.</div>
+      .linkBtn:hover {
+        text-decoration: underline;
+      }
+
+      .mainWelcome {
+        text-align: center;
+        padding-top: 8px;
+      }
+
+      .welcomeTitle {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .welcomeSub {
+        margin: 10px 0 0 0;
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+
+      .welcomeBadge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(22, 163, 74, 0.25);
+        background: rgba(22, 163, 74, 0.08);
+        color: var(--success);
+        font-weight: 800;
+        font-size: 13px;
+      }
+
+      /* Компактность для телефонов */
+      @media (max-width: 420px) {
+        body {
+          padding: 10px;
+        }
+        .card {
+          border-radius: 18px;
+          max-height: calc(100vh - 20px);
+        }
+        .cardHeader {
+          padding: 16px 14px 8px 14px;
+        }
+        .content {
+          padding: 10px 14px 14px 14px;
+        }
+        .subtitle {
+          font-size: 12.5px;
+        }
+        .btn {
+          height: 44px;
+        }
+        .codeInput {
+          width: 50px;
+          height: 60px;
+          border-radius: 14px;
+        }
+        .codeRow {
+          gap: 3px;
+        }
+      }
+
+      /* Очень маленькие экраны: чуть уменьшаем зазоры, но ширину полей оставляем 50px */
+      @media (max-width: 360px) {
+        body {
+          padding: 0;
+        }
+        .app {
+          max-width: 100%;
+        }
+        .content {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+        .codeRow {
+          gap: 2px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <div class="card" role="application" aria-label="Zeno">
+        <div class="cardHeader">
+          <h1 class="brand">ZENO</h1>
+          <p class="subtitle" id="subtitleText">Вход по номеру телефона</p>
         </div>
 
-        <div class="screen" id="screen-code">
-          <label class="fieldLabel" for="codeInputs">Код подтверждения</label>
-          <div class="codeRow" id="codeInputs" aria-label="Введите 6-значный код">
-            <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-            <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-            <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-            <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-            <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-            <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
-          </div>
-          <button class="btn" id="btnConfirm" type="button" disabled>Подтвердить</button>
-          <div class="hint">Вводите цифры — фокус будет двигаться автоматически.</div>
-        </div>
+        <div class="content">
+          <section class="screen active" id="screen-enter" aria-label="Ввод номера">
+            <label class="fieldLabel" for="phone">Номер телефона</label>
+            <input
+              class="input"
+              id="phone"
+              type="tel"
+              inputmode="tel"
+              autocomplete="tel"
+              placeholder="+7 999 123-45-67"
+            />
 
-        <div class="screen" id="screen-main">
-          <div class="welcome">
-            <p class="welcomeTitle" id="welcomeTitle">Добро пожаловать!</p>
-            <div class="welcomeBadge">
-              <span aria-hidden="true">✓</span>
-              <span id="welcomeMeta">Вы успешно вошли</span>
+            <div class="btnRow">
+              <button class="btn" id="btnNext" type="button" disabled>Далее</button>
             </div>
-          </div>
+          </section>
+
+          <section class="screen" id="screen-code" aria-label="Ввод кода">
+            <label class="fieldLabel" for="codeInputs">Код подтверждения</label>
+
+            <div class="codeWrap">
+              <div class="codeRow" id="codeInputs" aria-label="Введите 6-значный код">
+                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                <input class="codeInput" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+              </div>
+            </div>
+
+            <div class="btnRow">
+              <button class="btn" id="btnConfirm" type="button" disabled>Подтвердить</button>
+            </div>
+
+            <div class="resend">
+              <button class="linkBtn" id="resendLink" type="button">
+                Не пришел код? Отправить снова
+              </button>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-main" aria-label="Главный экран">
+            <div class="mainWelcome">
+              <p class="welcomeTitle" id="welcomeTitle">Привет, Пользователь!</p>
+              <p class="welcomeSub">Добро пожаловать в Zeno!</p>
+              <div class="welcomeBadge">
+                <span aria-hidden="true">✓</span>
+                <span>Вход выполнен</span>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    const phoneEl = document.getElementById('phone');
-    const btnNext = document.getElementById('btnNext');
+    <script>
+      const phoneEl = document.getElementById("phone");
+      const btnNext = document.getElementById("btnNext");
 
-    const screenEnter = document.getElementById('screen-enter');
-    const screenCode = document.getElementById('screen-code');
-    const screenMain = document.getElementById('screen-main');
+      const screenEnter = document.getElementById("screen-enter");
+      const screenCode = document.getElementById("screen-code");
+      const screenMain = document.getElementById("screen-main");
 
-    const btnConfirm = document.getElementById('btnConfirm');
-    const codeInputsWrap = document.getElementById('codeInputs');
-    const codeInputs = Array.from(codeInputsWrap.querySelectorAll('input.codeInput'));
+      const btnConfirm = document.getElementById("btnConfirm");
+      const codeInputsWrap = document.getElementById("codeInputs");
+      const codeInputs = Array.from(codeInputsWrap.querySelectorAll("input.codeInput"));
 
-    function digitsOnly(s) {
-      return String(s || '').replace(/\\D/g, '');
-    }
+      const resendLink = document.getElementById("resendLink");
 
-    function setScreen(which) {
-      screenEnter.classList.remove('active');
-      screenCode.classList.remove('active');
-      screenMain.classList.remove('active');
+      const welcomeTitle = document.getElementById("welcomeTitle");
 
-      if (which === 'enter') screenEnter.classList.add('active');
-      if (which === 'code') screenCode.classList.add('active');
-      if (which === 'main') screenMain.classList.add('active');
-    }
+      let currentPhoneDigits = "";
 
-    function updateNextState() {
-      // Минимум: 10 цифр (типовой номер в RU/СНГ).
-      const d = digitsOnly(phoneEl.value);
-      btnNext.disabled = d.length < 10;
-    }
+      function digitsOnly(s) {
+        return String(s || "").replace(/\D/g, "");
+      }
 
-    phoneEl.addEventListener('input', updateNextState);
-    updateNextState();
+      function setScreen(which) {
+        screenEnter.classList.remove("active");
+        screenCode.classList.remove("active");
+        screenMain.classList.remove("active");
 
-    function checkCodeComplete() {
-      // Активируем кнопку только когда заполнены ВСЕ 6 полей.
-      const code = codeInputs.map((el) => el.value).join('');
-      const ok = /^\\d{6}$/.test(code);
-      btnConfirm.disabled = !ok;
-      return ok;
-    }
+        if (which === "enter") screenEnter.classList.add("active");
+        if (which === "code") screenCode.classList.add("active");
+        if (which === "main") screenMain.classList.add("active");
+      }
 
-    function getCode() {
-      return codeInputs.map((el) => el.value).join('');
-    }
+      function checkCodeComplete() {
+        // Активируем кнопку только когда ВСЕ 6 полей заполнены цифрами.
+        const code = codeInputs.map((el) => el.value).join("");
+        const ok = /^\d{6}$/.test(code);
+        btnConfirm.disabled = !ok;
+        return ok;
+      }
 
-    btnNext.addEventListener('click', () => {
-      const phoneDigits = digitsOnly(phoneEl.value);
-      if (phoneDigits.length < 10) return;
+      function getCode() {
+        return codeInputs.map((el) => el.value).join("");
+      }
 
-      // Очистить код и включить экран ввода.
-      codeInputs.forEach((el) => (el.value = ''));
-      btnConfirm.disabled = true;
-      setScreen('code');
-      codeInputs[0].focus();
-    });
+      function clearCodeInputs() {
+        codeInputs.forEach((el) => (el.value = ""));
+        btnConfirm.disabled = true;
+      }
 
-    codeInputs.forEach((el, idx) => {
-      el.addEventListener('input', () => {
-        const d = digitsOnly(el.value);
+      function focusCodeIndex(i) {
+        const idx = Math.max(0, Math.min(i, codeInputs.length - 1));
+        codeInputs[idx].focus();
+        codeInputs[idx].select?.();
+      }
 
-        // Ничего полезного не ввели.
-        if (d.length === 0) {
-          el.value = '';
-          checkCodeComplete();
-          return;
-        }
+      function maskPhone(phoneDigits) {
+        if (phoneDigits.length < 10) return phoneEl.value || "";
+        return (
+          phoneDigits.slice(0, 2) +
+          " " +
+          phoneDigits.slice(2, 5) +
+          "-" +
+          phoneDigits.slice(5, 7) +
+          "-" +
+          phoneDigits.slice(7, 10)
+        );
+      }
 
-        // Перезаписываем начиная с текущего поля, чтобы не оставались "хвосты".
-        for (let j = idx; j < codeInputs.length; j++) codeInputs[j].value = '';
+      function getUserName(phoneDigits) {
+        // Требование: "с именем пользователя". У нас нет отдельного поля имени,
+        // поэтому "имя" формируем детерминированно по телефону.
+        const last4 = phoneDigits.slice(-4);
+        return last4 ? "Пользователь " + last4 : "Пользователь";
+      }
 
-        for (let i = 0; i < d.length && idx + i < codeInputs.length; i++) {
-          codeInputs[idx + i].value = d[i];
-        }
+      function updateNextState() {
+        // Требование: "Далее" активна, если номер не пустой.
+        const d = digitsOnly(phoneEl.value);
+        btnNext.disabled = d.length === 0;
+      }
 
-        const nextIndex = Math.min(idx + d.length, codeInputs.length - 1);
-        codeInputs[nextIndex].focus();
-        checkCodeComplete();
+      phoneEl.addEventListener("input", updateNextState);
+      updateNextState();
+
+      btnNext.addEventListener("click", () => {
+        currentPhoneDigits = digitsOnly(phoneEl.value);
+        if (!currentPhoneDigits) return;
+
+        clearCodeInputs();
+        setScreen("code");
+        focusCodeIndex(0);
       });
 
-      el.addEventListener('keydown', (e) => {
-        if (e.key !== 'Backspace') return;
+      // Ввод/переход между OTP-полями
+      codeInputs.forEach((el, idx) => {
+        el.addEventListener("input", () => {
+          // Поскольку maxlength=1, обычно будет 0/1 цифра,
+          // но на всякий случай поддержим ситуацию, когда в поле попало сразу несколько символов.
+          const d = digitsOnly(el.value);
 
-        // Требование: Backspace -> фокус на предыдущее поле.
-        if (idx === 0) {
-          e.preventDefault();
-          el.value = '';
+          if (d.length === 0) {
+            el.value = "";
+            checkCodeComplete();
+            return;
+          }
+
+          // Запишем до 6 цифр, начиная с текущего индекса.
+          let writeAt = idx;
+          for (let i = 0; i < d.length && writeAt < codeInputs.length; i++) {
+            codeInputs[writeAt].value = d[i];
+            writeAt++;
+          }
+
+          const nextIndex = Math.min(writeAt, codeInputs.length - 1);
+          focusCodeIndex(nextIndex);
           checkCodeComplete();
-          return;
-        }
+        });
 
-        // Если в текущем поле есть цифра — очищаем текущую и не переключаемся.
-        if (el.value && el.value.length > 0) {
+        el.addEventListener("keydown", (e) => {
+          if (e.key !== "Backspace") return;
+
+          if (idx === 0) {
+            e.preventDefault();
+            el.value = "";
+            checkCodeComplete();
+            return;
+          }
+
           e.preventDefault();
-          el.value = '';
-          checkCodeComplete();
-          return;
-        }
+          // Требование: курсор переходит к предыдущему полю.
+          // Если в текущем поле была цифра — очистим текущую.
+          if (el.value && el.value.length > 0) el.value = "";
 
-        // Если текущее поле пустое — перейти назад, очистив предыдущее.
+          // Не очищаем предыдущее поле автоматически: просто переводим фокус.
+          focusCodeIndex(idx - 1);
+          checkCodeComplete();
+        });
+      });
+
+      // Паста: вставляем до 6 цифр сразу.
+      codeInputsWrap.addEventListener("paste", (e) => {
+        const text = e.clipboardData ? e.clipboardData.getData("text") : "";
+        const d = digitsOnly(text).slice(0, 6);
+        if (!d) return;
+
         e.preventDefault();
-        const prev = codeInputs[idx - 1];
-        prev.value = '';
-        prev.focus();
+        clearCodeInputs();
+
+        for (let i = 0; i < d.length; i++) {
+          codeInputs[i].value = d[i];
+        }
+
+        const lastFilled = Math.min(d.length - 1, codeInputs.length - 1);
+        focusCodeIndex(lastFilled);
         checkCodeComplete();
       });
-    });
 
-    btnConfirm.addEventListener('click', () => {
-      if (!checkCodeComplete()) return;
-      const code = getCode();
-      const phoneDigits = digitsOnly(phoneEl.value);
+      // Подтверждение
+      btnConfirm.addEventListener("click", () => {
+        if (!checkCodeComplete()) return;
 
-      // Показываем приветствие после успешного подтверждения (проверка по требованию: любой 6-значный).
-      const maskedPhone =
-        phoneDigits.length >= 10
-          ? phoneDigits.slice(0, 2) + ' ' + phoneDigits.slice(2, 5) + '-' + phoneDigits.slice(5, 7) + '-' + phoneDigits.slice(7, 10)
-          : phoneEl.value;
+        const code = getCode();
+        if (!/^\d{6}$/.test(code)) return; // дополнительная защита от некорректного состояния
 
-      document.getElementById('welcomeMeta').textContent =
-        'Вошли: ' + maskedPhone + ' (код: ' + code + ')';
+        // "Если код правильный — переходим на главный экран"
+        // Проверка кода: подходит любой 6-значный.
+        const username = getUserName(currentPhoneDigits);
+        welcomeTitle.textContent = "Привет, " + username + "!";
 
-      setScreen('main');
-    });
+        setScreen("main");
+      });
 
-    // Поддержка вставки кода целиком (и почти целиком).
-    codeInputsWrap.addEventListener('paste', (e) => {
-      const text = e.clipboardData ? e.clipboardData.getData('text') : '';
-      const d = digitsOnly(text).slice(0, 6);
-      if (d.length === 0) return;
+      // Ссылка: возвращает на экран входа
+      resendLink.addEventListener("click", () => {
+        currentPhoneDigits = digitsOnly(phoneEl.value);
+        clearCodeInputs();
+        setScreen("enter");
+        // Сохраняем номер телефона как есть (UX), но фокусируемся на поле.
+        phoneEl.focus();
+      });
 
-      e.preventDefault();
-      codeInputs.forEach((el) => (el.value = ''));
-      d.split('').forEach((ch, i) => (codeInputs[i].value = ch));
-
-      const lastFilled = Math.min(d.length - 1, codeInputs.length - 1);
-      codeInputs[lastFilled].focus();
+      // Инициализация состояния при загрузке
       checkCodeComplete();
-    });
-
-    // Инициализация состояния.
-    checkCodeComplete();
-  </script>
-</body>
+    </script>
+  </body>
 </html>
 
