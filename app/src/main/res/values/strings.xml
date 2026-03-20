@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zeno</string>
+
+    <string name="screen_enter_phone_title">Вход</string>
+    <string name="label_phone_number">Номер телефона</string>
+    <string name="placeholder_phone_number">+7 999 123-45-67</string>
+    <string name="button_next">Далее</string>
+
+    <string name="screen_verify_code_title">Подтверждение</string>
+    <string name="screen_verify_code_description">Введите 6-значный код из SMS</string>
+    <string name="label_verification_code">Код подтверждения</string>
+    <string name="placeholder_code">123456</string>
+    <string name="button_confirm">Подтвердить</string>
+
+    <string name="screen_main_title">Zeno</string>
+    <string name="screen_main_welcome">Добро пожаловать!</string>
+    <string name="screen_main_empty">Пока нет чатов</string>
+</resources>
+
