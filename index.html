@@ -270,7 +270,6 @@
 
     const btnConfirm = document.getElementById('btnConfirm');
     const codeInputsWrap = document.getElementById('codeInputs');
-
     const codeInputs = Array.from(codeInputsWrap.querySelectorAll('input.codeInput'));
 
     function digitsOnly(s) {
@@ -296,6 +295,18 @@
     phoneEl.addEventListener('input', updateNextState);
     updateNextState();
 
+    function checkCodeComplete() {
+      // Активируем кнопку только когда заполнены ВСЕ 6 полей.
+      const code = codeInputs.map((el) => el.value).join('');
+      const ok = /^\\d{6}$/.test(code);
+      btnConfirm.disabled = !ok;
+      return ok;
+    }
+
+    function getCode() {
+      return codeInputs.map((el) => el.value).join('');
+    }
+
     btnNext.addEventListener('click', () => {
       const phoneDigits = digitsOnly(phoneEl.value);
       if (phoneDigits.length < 10) return;
@@ -307,59 +318,63 @@
       codeInputs[0].focus();
     });
 
-    function updateConfirmState() {
-      const code = codeInputs.map((el) => el.value).join('');
-      btnConfirm.disabled = !/^\\d{6}$/.test(code);
-    }
-
     codeInputs.forEach((el, idx) => {
       el.addEventListener('input', () => {
         const d = digitsOnly(el.value);
 
+        // Ничего полезного не ввели.
         if (d.length === 0) {
           el.value = '';
-          updateConfirmState();
+          checkCodeComplete();
           return;
         }
 
-        // Заполняем текущий и следующие поля, если в один input попало больше одной цифры.
-        let writeAt = idx;
-        for (let i = 0; i < d.length && writeAt < codeInputs.length; i++) {
-          codeInputs[writeAt].value = d[i];
-          writeAt++;
+        // Перезаписываем начиная с текущего поля, чтобы не оставались "хвосты".
+        for (let j = idx; j < codeInputs.length; j++) codeInputs[j].value = '';
+
+        for (let i = 0; i < d.length && idx + i < codeInputs.length; i++) {
+          codeInputs[idx + i].value = d[i];
         }
 
-        // Переходим на следующее поле, куда ожидается ввод.
-        const focusIndex = Math.min(writeAt, codeInputs.length - 1);
-        codeInputs[focusIndex].focus();
-        updateConfirmState();
+        const nextIndex = Math.min(idx + d.length, codeInputs.length - 1);
+        codeInputs[nextIndex].focus();
+        checkCodeComplete();
       });
 
       el.addEventListener('keydown', (e) => {
         if (e.key !== 'Backspace') return;
 
+        // Требование: Backspace -> фокус на предыдущее поле.
         if (idx === 0) {
           e.preventDefault();
           el.value = '';
-          updateConfirmState();
+          checkCodeComplete();
           return;
         }
 
-        // По требованию: при Backspace курсор переходит к предыдущему полю.
+        // Если в текущем поле есть цифра — очищаем текущую и не переключаемся.
+        if (el.value && el.value.length > 0) {
+          e.preventDefault();
+          el.value = '';
+          checkCodeComplete();
+          return;
+        }
+
+        // Если текущее поле пустое — перейти назад, очистив предыдущее.
         e.preventDefault();
         const prev = codeInputs[idx - 1];
         prev.value = '';
         prev.focus();
-        updateConfirmState();
+        checkCodeComplete();
       });
     });
 
     btnConfirm.addEventListener('click', () => {
-      if (btnConfirm.disabled) return;
-      const code = codeInputs.map((el) => el.value).join('');
+      if (!checkCodeComplete()) return;
+      const code = getCode();
       const phoneDigits = digitsOnly(phoneEl.value);
 
-      // Показываем приветствие после успешного подтверждения (демо-логика).
+      // Показываем приветствие после успешного подтверждения (проверка по требованию: любой 6-значный).
       const maskedPhone =
         phoneDigits.length >= 10
           ? phoneDigits.slice(0, 2) + ' ' + phoneDigits.slice(2, 5) + '-' + phoneDigits.slice(5, 7) + '-' + phoneDigits.slice(7, 10)
@@ -371,16 +386,23 @@
       setScreen('main');
     });
 
-    // Поддержка вставки кода целиком.
+    // Поддержка вставки кода целиком (и почти целиком).
     codeInputsWrap.addEventListener('paste', (e) => {
       const text = e.clipboardData ? e.clipboardData.getData('text') : '';
       const d = digitsOnly(text).slice(0, 6);
-      if (d.length < 6) return;
+      if (d.length === 0) return;
+
       e.preventDefault();
+      codeInputs.forEach((el) => (el.value = ''));
       d.split('').forEach((ch, i) => (codeInputs[i].value = ch));
-      updateConfirmState();
-      codeInputs[5].focus();
+
+      const lastFilled = Math.min(d.length - 1, codeInputs.length - 1);
+      codeInputs[lastFilled].focus();
+      checkCodeComplete();
     });
+
+    // Инициализация состояния.
+    checkCodeComplete();
   </script>
 </body>
 </html>
