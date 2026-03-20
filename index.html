@@ -41,7 +41,7 @@
       .app {
         width: 100%;
         max-width: 980px;
-        height: min(100vh - 24px, 820px);
+        height: min(100vh - 24px, 860px);
       }
 
       .shell {
@@ -50,6 +50,8 @@
         overflow: hidden;
         background: var(--card);
         border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
       }
 
       .screen {
@@ -62,6 +64,7 @@
         flex-direction: column;
       }
 
+      /* AUTH */
       .auth {
         flex: 1;
         display: flex;
@@ -71,28 +74,26 @@
         padding: 22px;
       }
 
-      .logo {
-        text-align: center;
-        margin-bottom: 18px;
-      }
-
       .logoTitle {
         margin: 0;
-        font-size: 28px;
-        letter-spacing: 0.12em;
-        font-weight: 900;
+        font-size: 32px;
+        font-weight: 950;
+        letter-spacing: 0.14em;
+        text-align: center;
       }
 
-      .authTitle {
-        margin: 10px 0 0 0;
+      .authSub {
+        margin-top: 10px;
         color: var(--muted);
         font-size: 13px;
+        text-align: center;
       }
 
       .formCard {
         width: min(440px, 100%);
+        margin-top: 18px;
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.18);
+        background: rgba(0, 0, 0, 0.22);
         border: 1px solid var(--border);
         padding: 18px;
       }
@@ -127,7 +128,7 @@
         border-radius: 14px;
         border: none;
         cursor: pointer;
-        font-weight: 800;
+        font-weight: 900;
         font-size: 15px;
         background: var(--accent);
         color: #041018;
@@ -148,11 +149,34 @@
         margin-top: 12px;
       }
 
+      .hint {
+        margin-top: 10px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.25;
+      }
+
+      .error {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 77, 79, 0.35);
+        background: rgba(255, 77, 79, 0.12);
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 13px;
+        display: none;
+      }
+      .error.active {
+        display: block;
+      }
+
+      /* OTP */
       .codeRow {
         display: flex;
         justify-content: center;
         gap: 10px;
-        margin-top: 8px;
+        margin-top: 10px;
         margin-bottom: 12px;
       }
 
@@ -174,16 +198,8 @@
         box-shadow: 0 0 0 5px rgba(42, 171, 238, 0.15);
       }
 
-      .hint {
-        margin-top: 8px;
-        text-align: center;
-        color: var(--muted);
-        font-size: 12.5px;
-        line-height: 1.2;
-      }
-
       .resend {
-        margin-top: 14px;
+        margin-top: 12px;
         text-align: center;
       }
 
@@ -198,7 +214,7 @@
         text-underline-offset: 3px;
       }
 
-      /* Chat layout */
+      /* CHAT */
       .chat {
         flex: 1;
         display: flex;
@@ -210,8 +226,8 @@
         height: 64px;
         display: flex;
         align-items: center;
-        padding: 0 14px;
         gap: 12px;
+        padding: 0 14px;
         border-bottom: 1px solid var(--border);
       }
 
@@ -219,12 +235,12 @@
         width: 38px;
         height: 38px;
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(42, 171, 238, 0.9), rgba(124, 58, 237, 0.65));
+        background: linear-gradient(135deg, rgba(42, 171, 238, 0.95), rgba(124, 58, 237, 0.55));
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 900;
-        color: #05111a;
+        font-weight: 950;
+        color: #041018;
       }
 
       .topMeta {
@@ -234,7 +250,7 @@
       }
 
       .userName {
-        font-weight: 900;
+        font-weight: 950;
         font-size: 14px;
         white-space: nowrap;
         overflow: hidden;
@@ -265,7 +281,7 @@
       .sidebarTitle {
         color: var(--muted);
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 900;
         margin: 4px 6px 10px 6px;
       }
 
@@ -275,12 +291,13 @@
         background: transparent;
         color: var(--text);
         text-align: left;
-        padding: 10px 10px;
+        padding: 10px;
         border-radius: 14px;
         cursor: pointer;
         display: flex;
         flex-direction: column;
         gap: 2px;
+        margin-bottom: 6px;
       }
 
       .chatItem:hover {
@@ -293,7 +310,7 @@
       }
 
       .chatItemName {
-        font-weight: 900;
+        font-weight: 950;
         font-size: 14px;
       }
 
@@ -386,8 +403,12 @@
         cursor: pointer;
         background: var(--accent);
         color: #041018;
-        font-weight: 900;
+        font-weight: 950;
         flex-shrink: 0;
+      }
+
+      .sendBtn:active {
+        transform: translateY(1px);
       }
 
       /* Responsive */
@@ -408,7 +429,6 @@
         }
       }
 
-      /* Phone: sidebar becomes a horizontal strip */
       @media (max-width: 520px) {
         .chatBody {
           flex-direction: column;
@@ -420,7 +440,7 @@
           display: flex;
           overflow-x: auto;
           overflow-y: hidden;
-          padding: 10px 10px;
+          padding: 10px;
           gap: 8px;
         }
         .sidebarTitle {
@@ -428,40 +448,47 @@
         }
         .chatItem {
           min-width: 180px;
+          margin-bottom: 0;
         }
         .bubble {
           max-width: 88%;
         }
       }
 
-      /* Узкие экраны: поджимаем зазор OTP-полей, сохраняя 50x60 */
+      /* Узкие: OTP-шапка */
       @media (max-width: 420px) {
-        .formCard {
-          padding: 16px;
-        }
         .codeRow {
           gap: 6px;
         }
       }
-
-      @media (max-width: 360px) {
-        .codeRow {
-          gap: 4px;
-        }
-      }
     </style>
+
+    <!-- Firebase (Client-only for GitHub Pages) -->
+    <script
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
+      defer
+    ></script>
+    <script
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"
+      defer
+    ></script>
+    <script
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"
+      defer
+    ></script>
   </head>
 
   <body>
     <div class="app">
       <div class="shell">
-        <!-- AUTH: ENTER PHONE -->
+        <!-- recaptcha container -->
+        <div id="recaptcha-container" style="display: none"></div>
+
+        <!-- AUTH SCREEN: PHONE -->
         <section class="screen active" id="screen-enter">
           <div class="auth">
-            <div class="logo">
-              <h1 class="logoTitle">ZENO</h1>
-              <div class="authTitle" id="enterSubtitle">Вход по номеру телефона</div>
-            </div>
+            <h1 class="logoTitle">ZENO</h1>
+            <div class="authSub" id="enterSubtitle">Вход по номеру телефона</div>
 
             <div class="formCard">
               <label for="phone">Номер телефона</label>
@@ -478,18 +505,17 @@
                 <button class="btn" id="btnNext" type="button" disabled>Далее</button>
               </div>
 
-              <div class="hint">Мы отправим код подтверждения на указанный номер.</div>
+              <div class="hint">Мы отправим SMS с кодом подтверждения.</div>
+              <div class="error" id="authError"></div>
             </div>
           </div>
         </section>
 
-        <!-- AUTH: VERIFY CODE -->
+        <!-- AUTH SCREEN: CODE -->
         <section class="screen" id="screen-code">
           <div class="auth">
-            <div class="logo">
-              <h1 class="logoTitle">ZENO</h1>
-              <div class="authTitle">Введите код из SMS</div>
-            </div>
+            <h1 class="logoTitle">ZENO</h1>
+            <div class="authSub">Введите код из SMS</div>
 
             <div class="formCard">
               <label for="codeInputs">Код подтверждения</label>
@@ -508,13 +534,16 @@
               </div>
 
               <div class="resend">
-                <button class="linkBtn" id="resendLink" type="button">Не пришел код? Отправить снова</button>
+                <button class="linkBtn" id="resendLink" type="button">
+                  Не пришел код? Отправить снова
+                </button>
               </div>
+              <div class="error" id="authErrorCode"></div>
             </div>
           </div>
         </section>
 
-        <!-- CHAT MAIN SCREEN -->
+        <!-- CHAT SCREEN -->
         <section class="screen" id="screen-main">
           <div class="chat">
             <div class="topBar">
@@ -526,7 +555,7 @@
             </div>
 
             <div class="chatBody">
-              <aside class="sidebar" id="chatList"></aside>
+              <aside class="sidebar" id="chatList" aria-label="Список чатов"></aside>
 
               <div class="conversation">
                 <div class="messages" id="messages" aria-label="Сообщения"></div>
@@ -550,308 +579,559 @@
     </div>
 
     <script>
-      const phoneEl = document.getElementById("phone");
-      const btnNext = document.getElementById("btnNext");
+      // Required by user: Firebase config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgb60YBJ9CtE0jz7Z7nKG5V2-NpTaF5yw",
+        authDomain: "zeno-offisal.firebaseapp.com",
+        projectId: "zeno-offisal",
+        storageBucket: "zeno-offisal.firebasestorage.app",
+        messagingSenderId: "280179393071",
+        appId: "1:280179393071:web:227a3806f74cd59e04fcda",
+        measurementId: "G-F0WQ9FDGGN",
+      };
 
-      const screenEnter = document.getElementById("screen-enter");
-      const screenCode = document.getElementById("screen-code");
-      const screenMain = document.getElementById("screen-main");
-
-      const btnConfirm = document.getElementById("btnConfirm");
-      const resendLink = document.getElementById("resendLink");
-      const codeInputsWrap = document.getElementById("codeInputsWrap");
-      const codeInputs = Array.from(codeInputsWrap.querySelectorAll("input.codeInput"));
-
-      const avatarEl = document.getElementById("avatar");
-      const userNameEl = document.getElementById("userName");
-      const messagesEl = document.getElementById("messages");
-      const chatListEl = document.getElementById("chatList");
-      const messageInputEl = document.getElementById("messageInput");
-      const sendBtnEl = document.getElementById("sendBtn");
-
-      // --- State ---
-      let currentPhoneDigits = "";
-      let selectedChatId = null;
-
-      // demo model: chat messages kept in JS state
-      const chats = [
-        {
-          id: "c1",
-          name: "Дима",
-          messages: [
-            { from: "them", text: "Привет! Ты в Zeno?" },
-            { from: "me", text: "Да, только начал." },
-            { from: "them", text: "Круто. Давай попробуем чат." }
-          ],
-        },
-        {
-          id: "c2",
-          name: "Анна",
-          messages: [
-            { from: "them", text: "Какой код ввода?" },
-            { from: "me", text: "Любой 6-значный подходит :)"},
-            { from: "them", text: "Ок, работает!" }
-          ],
-        },
-        {
-          id: "c3",
-          name: "Поддержка",
-          messages: [
-            { from: "them", text: "Если что — напиши нам сообщение ниже." }
-          ],
-        },
-      ];
-
-      // --- Helpers ---
-      function digitsOnly(s) {
-        return String(s || "").replace(/\D/g, "");
+      // Wait for Firebase scripts
+      function ensureFirebase() {
+        if (!window.firebase) return false;
+        if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        return true;
       }
 
-      function setScreen(which) {
-        screenEnter.classList.remove("active");
-        screenCode.classList.remove("active");
-        screenMain.classList.remove("active");
-
-        if (which === "enter") screenEnter.classList.add("active");
-        if (which === "code") screenCode.classList.add("active");
-        if (which === "main") screenMain.classList.add("active");
-      }
-
-      function checkCodeComplete() {
-        const code = codeInputs.map((el) => el.value).join("");
-        const ok = /^\d{6}$/.test(code);
-        btnConfirm.disabled = !ok;
-        return ok;
-      }
-
-      function getCode() {
-        return codeInputs.map((el) => el.value).join("");
-      }
-
-      function clearCodeInputs() {
-        codeInputs.forEach((el) => (el.value = ""));
-        btnConfirm.disabled = true;
-      }
-
-      function focusCodeIndex(i) {
-        const idx = Math.max(0, Math.min(i, codeInputs.length - 1));
-        codeInputs[idx].focus();
-        codeInputs[idx].select?.();
-      }
-
-      function getUserNameFromPhone(phoneDigits) {
-        // Требование: показывать имя пользователя.
-        // Делаем детерминированно по номеру.
-        const last4 = phoneDigits.slice(-4);
-        return last4 ? "Пользователь " + last4 : "Пользователь";
-      }
-
-      function getAvatarLetter(userName) {
-        const first = (userName || "U").trim().charAt(0).toUpperCase();
-        return first || "U";
-      }
-
-      // --- AUTH: PHONE ---
-      function updateNextState() {
-        const d = digitsOnly(phoneEl.value);
-        btnNext.disabled = d.length === 0;
-      }
-
-      phoneEl.addEventListener("input", updateNextState);
-      updateNextState();
-
-      btnNext.addEventListener("click", () => {
-        currentPhoneDigits = digitsOnly(phoneEl.value);
-        if (!currentPhoneDigits) return;
-
-        clearCodeInputs();
-        setScreen("code");
-        focusCodeIndex(0);
+      const waitForFirebase = new Promise((resolve) => {
+        const start = Date.now();
+        const timer = setInterval(() => {
+          if (ensureFirebase()) {
+            clearInterval(timer);
+            resolve();
+            return;
+          }
+          if (Date.now() - start > 15000) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 100);
       });
 
-      // --- AUTH: CODE INPUTS ---
-      codeInputs.forEach((el, idx) => {
-        el.addEventListener("input", () => {
-          const d = digitsOnly(el.value);
+      waitForFirebase.then(() => {
+        if (!window.firebase) {
+          // eslint-disable-next-line no-alert
+          alert("Firebase SDK не загрузился. Проверьте доступ к https://www.gstatic.com.");
+          return;
+        }
 
-          if (!d) {
-            el.value = "";
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // --- DOM ---
+        const phoneEl = document.getElementById("phone");
+        const btnNext = document.getElementById("btnNext");
+
+        const screenEnter = document.getElementById("screen-enter");
+        const screenCode = document.getElementById("screen-code");
+        const screenMain = document.getElementById("screen-main");
+
+        const btnConfirm = document.getElementById("btnConfirm");
+        const resendLink = document.getElementById("resendLink");
+
+        const codeInputsWrap = document.getElementById("codeInputsWrap");
+        const codeInputs = Array.from(codeInputsWrap.querySelectorAll("input.codeInput"));
+
+        const authErrorEnter = document.getElementById("authError");
+        const authErrorCode = document.getElementById("authErrorCode");
+
+        const avatarEl = document.getElementById("avatar");
+        const userNameEl = document.getElementById("userName");
+        const userSubEl = document.getElementById("userSub");
+
+        const chatListEl = document.getElementById("chatList");
+        const messagesEl = document.getElementById("messages");
+        const messageInputEl = document.getElementById("messageInput");
+        const sendBtnEl = document.getElementById("sendBtn");
+
+        const recaptchaContainer = document.getElementById("recaptcha-container");
+
+        // --- State ---
+        let verificationId = null;
+        let loginPhoneE164 = "";
+        let currentPhoneE164 = "";
+        let selectedConversationId = null;
+
+        // Firestore listeners to unsubscribe
+        let unsubConversations = null;
+        let unsubMessages = null;
+
+        const SUPPORT_PHONE = "support";
+        const SUPPORT_NAME = "Поддержка";
+
+        // --- UI Helpers ---
+        function setScreen(which) {
+          screenEnter.classList.remove("active");
+          screenCode.classList.remove("active");
+          screenMain.classList.remove("active");
+
+          if (which === "enter") screenEnter.classList.add("active");
+          if (which === "code") screenCode.classList.add("active");
+          if (which === "main") screenMain.classList.add("active");
+        }
+
+        function showError(el, text) {
+          if (!el) return;
+          el.textContent = text || "Ошибка";
+          el.classList.add("active");
+        }
+
+        function clearError(el) {
+          if (!el) return;
+          el.textContent = "";
+          el.classList.remove("active");
+        }
+
+        // --- OTP Logic ---
+        function digitsOnly(s) {
+          return String(s || "").replace(/\D/g, "");
+        }
+
+        function checkCodeComplete() {
+          // Кнопка активна ТОЛЬКО при заполненных 6 полях (в цифрах).
+          const code = codeInputs.map((el) => el.value).join("");
+          const ok = /^\d{6}$/.test(code);
+          btnConfirm.disabled = !ok;
+          return ok;
+        }
+
+        function getCode() {
+          return codeInputs.map((el) => el.value).join("");
+        }
+
+        function clearCodeInputs() {
+          codeInputs.forEach((el) => (el.value = ""));
+          btnConfirm.disabled = true;
+        }
+
+        function focusCodeIndex(i) {
+          const idx = Math.max(0, Math.min(i, codeInputs.length - 1));
+          codeInputs[idx].focus();
+          codeInputs[idx].select?.();
+        }
+
+        phoneEl.addEventListener("input", () => {
+          const d = digitsOnly(phoneEl.value);
+          btnNext.disabled = d.length === 0;
+          clearError(authErrorEnter);
+        });
+        btnNext.disabled = true;
+
+        // Convert digits to a consistent E.164-ish format (+7...).
+        function toE164FromDigits(digits) {
+          if (!digits) return "";
+          if (digits.length === 11 && digits.startsWith("7")) return "+" + digits;
+          if (digits.length === 10) return "+7" + digits;
+          // Fallback: keep as +digits if possible
+          return digits.startsWith("+") ? digits : "+" + digits;
+        }
+
+        function getVerifier() {
+          if (window.recaptchaVerifier && typeof window.recaptchaVerifier.clear === "function") {
+            try {
+              window.recaptchaVerifier.clear();
+            } catch (_) {}
+          }
+          window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+            recaptchaContainer,
+            { size: "invisible" },
+            auth
+          );
+          return window.recaptchaVerifier;
+        }
+
+        btnNext.addEventListener("click", async () => {
+          clearError(authErrorEnter);
+          clearError(authErrorCode);
+
+          const digits = digitsOnly(phoneEl.value);
+          if (!digits) return;
+
+          loginPhoneE164 = toE164FromDigits(digits);
+          currentPhoneE164 = loginPhoneE164;
+
+          verificationId = null;
+          clearCodeInputs();
+          setScreen("code");
+
+          try {
+            const appVerifier = getVerifier();
+            const phoneProvider = new firebase.auth.PhoneAuthProvider();
+            const result = await phoneProvider.verifyPhoneNumber(
+              loginPhoneE164,
+              appVerifier
+            );
+            // With compat, verifyPhoneNumber returns verificationId as string
+            verificationId = result;
+            focusCodeIndex(0);
+          } catch (e) {
+            verificationId = null;
+            showError(authErrorCode, e?.message || "Не удалось отправить код. Проверьте настройки Firebase.");
+          }
+        });
+
+        resendLink.addEventListener("click", async () => {
+          clearError(authErrorCode);
+          if (!loginPhoneE164) return;
+
+          verificationId = null;
+          clearCodeInputs();
+          try {
+            const appVerifier = getVerifier();
+            const phoneProvider = new firebase.auth.PhoneAuthProvider();
+            const result = await phoneProvider.verifyPhoneNumber(
+              loginPhoneE164,
+              appVerifier
+            );
+            verificationId = result;
+            focusCodeIndex(0);
+          } catch (e) {
+            showError(authErrorCode, e?.message || "Не удалось отправить код повторно.");
+          }
+        });
+
+        codeInputs.forEach((el, idx) => {
+          el.addEventListener("input", () => {
+            const d = digitsOnly(el.value);
+            if (!d) {
+              el.value = "";
+              checkCodeComplete();
+              return;
+            }
+
+            // When multiple digits somehow land into one input: fill sequentially.
+            let writeAt = idx;
+            for (let i = 0; i < d.length && writeAt < codeInputs.length; i++) {
+              codeInputs[writeAt].value = d[i];
+              writeAt++;
+            }
+
+            focusCodeIndex(Math.min(writeAt, codeInputs.length - 1));
             checkCodeComplete();
+          });
+
+          el.addEventListener("keydown", (e) => {
+            if (e.key !== "Backspace") return;
+
+            e.preventDefault();
+
+            // Requirement: cursor to previous field.
+            if (idx > 0) {
+              el.value = "";
+              focusCodeIndex(idx - 1);
+            } else {
+              el.value = "";
+            }
+            checkCodeComplete();
+          });
+        });
+
+        codeInputsWrap.addEventListener("paste", (e) => {
+          const text = e.clipboardData ? e.clipboardData.getData("text") : "";
+          const d = digitsOnly(text).slice(0, 6);
+          if (!d) return;
+          e.preventDefault();
+
+          clearCodeInputs();
+          for (let i = 0; i < d.length; i++) codeInputs[i].value = d[i];
+
+          focusCodeIndex(Math.min(d.length - 1, 5));
+          checkCodeComplete();
+        });
+
+        btnConfirm.addEventListener("click", async () => {
+          clearError(authErrorCode);
+
+          if (!checkCodeComplete()) return;
+          if (!verificationId) {
+            showError(authErrorCode, "Сессия подтверждения устарела. Отправьте код снова.");
             return;
           }
 
-          // У нас maxlength=1, но иногда браузер может вставить 2+ символа.
-          let writeAt = idx;
-          for (let i = 0; i < d.length && writeAt < codeInputs.length; i++) {
-            codeInputs[writeAt].value = d[i];
-            writeAt++;
+          const code = getCode();
+          if (!/^\d{6}$/.test(code)) return;
+
+          try {
+            const credential = firebase.auth.PhoneAuthProvider.credential(
+              verificationId,
+              code
+            );
+
+            await auth.signInWithCredential(credential);
+
+            // Success -> build chat UI from Firestore
+            const user = auth.currentUser;
+            currentPhoneE164 = user?.phoneNumber || currentPhoneE164;
+
+            const userName = getUserNameFromPhone(currentPhoneE164);
+            avatarEl.textContent = getAvatarLetter(userName);
+            userNameEl.textContent = userName;
+            userSubEl.textContent = "Zeno • Чаты";
+
+            await ensureSupportConversationAndOpen();
+            setTimeout(() => messageInputEl.focus(), 0);
+          } catch (e) {
+            showError(authErrorCode, e?.message || "Не удалось подтвердить код.");
+          }
+        });
+
+        // --- Chat/Firestore ---
+        function getUserNameFromPhone(phoneE164) {
+          // Имя пользователя из телефона (демо-подход).
+          const digits = digitsOnly(phoneE164);
+          const last4 = digits.slice(-4);
+          return last4 ? "Пользователь " + last4 : "Пользователь";
+        }
+
+        function getAvatarLetter(name) {
+          const n = String(name || "U").trim();
+          return n ? n[0].toUpperCase() : "U";
+        }
+
+        function conversationIdForPhones(a, b) {
+          const x = String(a || "").trim();
+          const y = String(b || "").trim();
+          const pair = [x, y].sort();
+          return "c_" + pair[0] + "_" + pair[1];
+        }
+
+        function ensureSupportConversationId() {
+          return conversationIdForPhones(currentPhoneE164, SUPPORT_PHONE);
+        }
+
+        async function ensureSupportConversationAndOpen() {
+          // Create support conversation if it doesn't exist yet for this user
+          const convId = ensureSupportConversationId();
+          selectedConversationId = convId;
+
+          const convRef = db.collection("conversations").doc(convId);
+          const doc = await convRef.get();
+          if (!doc.exists) {
+            await convRef.set({
+              participants: [currentPhoneE164, SUPPORT_PHONE],
+              title: SUPPORT_NAME,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+            // Seed with a welcome message if empty
+            const messagesSnap = await convRef.collection("messages").limit(1).get();
+            if (messagesSnap.empty) {
+              await convRef.collection("messages").add({
+                from: SUPPORT_PHONE,
+                text: "Привет! Я поддержка Zeno. Напиши сообщение ниже.",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              });
+            }
           }
 
-          const nextIndex = Math.min(writeAt, codeInputs.length - 1);
-          focusCodeIndex(nextIndex);
-          checkCodeComplete();
-        });
-
-        el.addEventListener("keydown", (e) => {
-          if (e.key !== "Backspace") return;
-
-          e.preventDefault();
-
-          // Требование: курсор переходит к предыдущему полю.
-          // Очищаем текущее поле и переходим назад (если idx > 0).
-          el.value = "";
-          if (idx > 0) focusCodeIndex(idx - 1);
-          checkCodeComplete();
-        });
-      });
-
-      // paste whole code
-      codeInputsWrap.addEventListener("paste", (e) => {
-        const text = e.clipboardData ? e.clipboardData.getData("text") : "";
-        const d = digitsOnly(text).slice(0, 6);
-        if (!d) return;
-
-        e.preventDefault();
-        clearCodeInputs();
-
-        for (let i = 0; i < d.length; i++) codeInputs[i].value = d[i];
-        focusCodeIndex(Math.min(d.length - 1, codeInputs.length - 1));
-        checkCodeComplete();
-      });
-
-      btnConfirm.addEventListener("click", () => {
-        if (!checkCodeComplete()) return;
-
-        // Требование: проверка кода (подойдет любой 6-значный).
-        const code = getCode();
-        if (!/^\d{6}$/.test(code)) return;
-
-        // Success -> main screen
-        const userName = getUserNameFromPhone(currentPhoneDigits);
-        userNameEl.textContent = userName;
-        avatarEl.textContent = getAvatarLetter(userName);
-
-        // init chat UI
-        selectedChatId = chats[0]?.id || null;
-        renderChatList();
-        renderMessages();
-        setScreen("main");
-
-        // Focus composer
-        setTimeout(() => messageInputEl.focus(), 0);
-      });
-
-      resendLink.addEventListener("click", () => {
-        // Возврат на экран входа
-        currentPhoneDigits = digitsOnly(phoneEl.value);
-        clearCodeInputs();
-        setScreen("enter");
-        setTimeout(() => phoneEl.focus(), 0);
-      });
-
-      // --- CHAT RENDERING / SEND ---
-      function getSelectedChat() {
-        return chats.find((c) => c.id === selectedChatId) || chats[0];
-      }
-
-      function renderChatList() {
-        const items = chats
-          .map((c) => {
-            const last = c.messages[c.messages.length - 1];
-            const preview = last ? last.text : "Нет сообщений";
-            const active = c.id === selectedChatId ? "active" : "";
-            return `
-              <button class="chatItem ${active}" type="button" data-chat-id="${c.id}">
-                <div class="chatItemName">${c.name}</div>
-                <div class="chatItemPreview">${preview}</div>
-              </button>
-            `;
-          })
-          .join("");
-
-        chatListEl.innerHTML = `
-          <div class="sidebarTitle">Чаты</div>
-          ${items}
-        `;
-
-        chatListEl.querySelectorAll(".chatItem").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            selectedChatId = btn.getAttribute("data-chat-id");
-            renderChatList();
-            renderMessages();
-          });
-        });
-      }
-
-      function renderMessages() {
-        const chat = getSelectedChat();
-        const items = (chat?.messages || [])
-          .map((m) => {
-            const rowClass = m.from === "me" ? "me" : "them";
-            const bubbleClass = m.from === "me" ? "me" : "them";
-            return `
-              <div class="msgRow ${rowClass}">
-                <div class="bubble ${bubbleClass}">${escapeHtml(m.text)}</div>
-              </div>
-            `;
-          })
-          .join("");
-
-        messagesEl.innerHTML = items;
-        scrollMessagesToBottom();
-      }
-
-      function scrollMessagesToBottom() {
-        // Scroll after layout
-        requestAnimationFrame(() => {
-          messagesEl.scrollTop = messagesEl.scrollHeight;
-        });
-      }
-
-      function escapeHtml(s) {
-        return String(s || "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function sendMessage() {
-        const chat = getSelectedChat();
-        if (!chat) return;
-
-        const text = String(messageInputEl.value || "").trim();
-        if (!text) return;
-
-        messageInputEl.value = "";
-        messageInputEl.style.height = "";
-
-        chat.messages.push({ from: "me", text });
-        renderMessages();
-
-        // demo reply
-        setTimeout(() => {
-          const replies = ["Понял!", "Ок.", "Отлично.", "Супер, давай дальше.", "Принято :)"];
-          const reply = replies[Math.floor(Math.random() * replies.length)];
-          chat.messages.push({ from: "them", text: reply });
-          renderMessages();
-        }, 550);
-      }
-
-      function autosizeTextarea(el) {
-        el.style.height = "auto";
-        el.style.height = el.scrollHeight + "px";
-      }
-
-      messageInputEl.addEventListener("input", () => autosizeTextarea(messageInputEl));
-      sendBtnEl.addEventListener("click", sendMessage);
-
-      messageInputEl.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
+          // Subscribe chat list (conversations)
+          subscribeToConversations();
+          subscribeToMessages(selectedConversationId);
+          renderInitialChatList();
         }
+
+        function renderInitialChatList() {
+          const convId = ensureSupportConversationId();
+          chatListEl.innerHTML = `
+            <div class="sidebarTitle">Чаты</div>
+            <button class="chatItem active" type="button" data-conv-id="${convId}">
+              <div class="chatItemName">${SUPPORT_NAME}</div>
+              <div class="chatItemPreview">Поддержка в сети…</div>
+            </button>
+          `;
+          chatListEl.querySelectorAll(".chatItem").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              selectedConversationId = btn.getAttribute("data-conv-id");
+              subscribeToMessages(selectedConversationId);
+              renderChatListActive(selectedConversationId);
+            });
+          });
+        }
+
+        function renderChatListActive(convId) {
+          chatListEl.querySelectorAll(".chatItem").forEach((btn) => {
+            btn.classList.toggle("active", btn.getAttribute("data-conv-id") === convId);
+          });
+        }
+
+        function subscribeToConversations() {
+          if (unsubConversations) unsubConversations();
+
+          unsubConversations = db
+            .collection("conversations")
+            .where("participants", "array-contains", currentPhoneE164)
+            .onSnapshot(async (snap) => {
+              const convDocs = snap.docs;
+              if (!convDocs.length) return;
+
+              // Ensure selected conversation exists
+              if (!selectedConversationId) {
+                selectedConversationId = convDocs[0].id;
+              }
+
+              const html = [];
+              html.push(`<div class="sidebarTitle">Чаты</div>`);
+
+              for (const doc of convDocs) {
+                const data = doc.data() || {};
+                const title = data.title || "Чат";
+                const convId = doc.id;
+
+                // Preview text: from lastMessageText if stored, else fallback.
+                const preview = data.lastMessageText || "Сообщений пока нет";
+                const active = convId === selectedConversationId ? "active" : "";
+
+                html.push(`
+                  <button class="chatItem ${active}" type="button" data-conv-id="${convId}">
+                    <div class="chatItemName">${escapeHtml(title)}</div>
+                    <div class="chatItemPreview">${escapeHtml(preview)}</div>
+                  </button>
+                `);
+              }
+
+              chatListEl.innerHTML = html.join("");
+              chatListEl.querySelectorAll(".chatItem").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  selectedConversationId = btn.getAttribute("data-conv-id");
+                  subscribeToMessages(selectedConversationId);
+                  renderChatListActive(selectedConversationId);
+                });
+              });
+            });
+        }
+
+        function subscribeToMessages(conversationId) {
+          if (!conversationId) return;
+          if (unsubMessages) unsubMessages();
+
+          unsubMessages = db
+            .collection("conversations")
+            .doc(conversationId)
+            .collection("messages")
+            .orderBy("createdAt")
+            .limit(100)
+            .onSnapshot((snap) => {
+              const items = snap.docs.map((d) => d.data());
+              renderMessages(items, conversationId);
+            });
+        }
+
+        function renderMessages(messages, conversationId) {
+          messagesEl.innerHTML = "";
+          if (!messages || !messages.length) {
+            const empty = document.createElement("div");
+            empty.style.color = "var(--muted)";
+            empty.style.padding = "20px 0";
+            empty.textContent = "Сообщений пока нет";
+            messagesEl.appendChild(empty);
+            return;
+          }
+
+          for (const m of messages) {
+            const from = m.from || "";
+            const text = String(m.text || "");
+            const isMe = from === currentPhoneE164;
+
+            const row = document.createElement("div");
+            row.className = "msgRow " + (isMe ? "me" : "them");
+
+            const bubble = document.createElement("div");
+            bubble.className = "bubble " + (isMe ? "me" : "them");
+            bubble.textContent = text;
+
+            row.appendChild(bubble);
+            messagesEl.appendChild(row);
+          }
+
+          // scroll to bottom
+          requestAnimationFrame(() => {
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          });
+        }
+
+        function escapeHtml(s) {
+          return String(s || "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+        }
+
+        function autosizeTextarea(el) {
+          el.style.height = "auto";
+          el.style.height = el.scrollHeight + "px";
+        }
+
+        function sendMessage() {
+          if (!selectedConversationId) return;
+          const chatRef = db.collection("conversations").doc(selectedConversationId);
+
+          const text = String(messageInputEl.value || "").trim();
+          if (!text) return;
+
+          messageInputEl.value = "";
+          autosizeTextarea(messageInputEl);
+
+          const createdAt = firebase.firestore.FieldValue.serverTimestamp();
+
+          // Write message
+          chatRef
+            .collection("messages")
+            .add({ from: currentPhoneE164, text, createdAt })
+            .then(async () => {
+              await chatRef.set(
+                {
+                  updatedAt: createdAt,
+                  lastMessageText: text,
+                },
+                { merge: true }
+              );
+
+              // Demo auto-reply from support to make "real-time messenger" usable
+              setTimeout(async () => {
+                const replyText = pickReply();
+                await chatRef.collection("messages").add({
+                  from: SUPPORT_PHONE,
+                  text: replyText,
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                });
+                await chatRef.set(
+                  {
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastMessageText: replyText,
+                  },
+                  { merge: true }
+                );
+              }, 600);
+            })
+            .catch((e) => {
+              showError(authErrorCode, e?.message || "Не удалось отправить сообщение.");
+            });
+        }
+
+        function pickReply() {
+          const replies = [
+            "Понял. Продолжай!",
+            "Сообщение получено.",
+            "Ок, давай дальше.",
+            "Класс, работает.",
+            "Напиши ещё что-нибудь.",
+          ];
+          return replies[Math.floor(Math.random() * replies.length)];
+        }
+
+        messageInputEl.addEventListener("input", () => autosizeTextarea(messageInputEl));
+        sendBtnEl.addEventListener("click", sendMessage);
+        messageInputEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
       });
     </script>
   </body>
