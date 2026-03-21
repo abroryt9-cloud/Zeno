@@ -469,14 +469,17 @@
             });
         }
         
-        nextBtn.onclick = () => {
-            if (phoneInput.value.trim()) {
-                currentUser = { id: "user1", name: phoneInput.value, avatar: "U" };
-                displayPhone.textContent = phoneInput.value;
-                loginScreen.classList.add('hidden');
-                codeScreen.classList.remove('hidden');
-            }
-        };
+        nextBtn.onclick = function() {
+    const phone = phoneInput.value.trim();
+    if (phone.length > 5) {
+        currentUser = { id: "user1", name: phone, avatar: "U" };
+        displayPhone.textContent = phone;
+        loginScreen.classList.add('hidden');
+        codeScreen.classList.remove('hidden');
+    } else {
+        alert('Введите номер телефона');
+    }
+};
         
         verifyBtn.onclick = () => {
             let code = codeInputs.map(i => i.value).join('');
