@@ -2,22 +2,15 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Zeno Messenger</title>
-    
-    <!-- Firebase SDK (правильное подключение) -->
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
-            }
-        }
-    </script>
-    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #0F0F0F;
@@ -27,15 +20,18 @@
             align-items: center;
             padding: 16px;
         }
+        
+        /* Карточка */
         .card {
             background: #1E1E1E;
             border-radius: 28px;
-            padding: 40px 24px;
+            padding: 32px 24px;
             width: 100%;
-            max-width: 400px;
-            text-align: center;
+            max-width: 450px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
+        
+        /* Логотип */
         .logo {
             width: 80px;
             height: 80px;
@@ -49,7 +45,9 @@
             font-weight: bold;
             color: white;
         }
+        
         h1 {
+            text-align: center;
             font-size: 32px;
             font-weight: 600;
             background: linear-gradient(135deg, #667eea 0%, #2AABEE 100%);
@@ -58,142 +56,562 @@
             color: transparent;
             margin-bottom: 8px;
         }
+        
         .subtitle {
+            text-align: center;
             color: #8E8E93;
             font-size: 14px;
             margin-bottom: 32px;
         }
-        .google-btn {
+        
+        /* Поля ввода */
+        .input-field {
             width: 100%;
-            padding: 14px;
-            background: white;
-            color: #1E1E1E;
+            padding: 16px;
+            font-size: 18px;
+            background: #2C2C2E;
+            border: 1px solid #3A3A3C;
+            border-radius: 14px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #2AABEE;
+        }
+        
+        /* Кнопки */
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            background: #2AABEE;
+            color: white;
             border: none;
             border-radius: 14px;
-            font-size: 16px;
-            font-weight: 500;
             cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Поля для кода */
+        .code-digits {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+        
+        .code-digit {
+            width: 52px;
+            height: 64px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            background: #2C2C2E;
+            border: 1px solid #3A3A3C;
+            border-radius: 14px;
+            color: white;
+        }
+        
+        .code-digit:focus {
+            outline: none;
+            border-color: #2AABEE;
+        }
+        
+        .phone-number {
+            text-align: center;
+            color: #2AABEE;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        .resend-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .resend-link a {
+            color: #2AABEE;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Чат */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #2C2C2E;
+        }
+        
+        .chat-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #2AABEE 100%);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            transition: opacity 0.2s;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
         }
-        .google-btn:hover { opacity: 0.9; }
-        .user-info {
-            margin-top: 20px;
-            padding: 16px;
+        
+        .chat-user {
+            flex: 1;
+        }
+        
+        .chat-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .chat-status {
+            font-size: 12px;
+            color: #8E8E93;
+        }
+        
+        .back-btn {
+            background: none;
+            width: auto;
+            padding: 8px 12px;
+            font-size: 24px;
+        }
+        
+        .messages-area {
+            height: 400px;
+            overflow-y: auto;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+        
+        .message-mine {
+            background: #2AABEE;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message-theirs {
+            background: #2C2C2E;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .message-time {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #2C2C2E;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: #2C2C2E;
+            border: none;
+            border-radius: 24px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .message-input:focus {
+            outline: none;
+        }
+        
+        .send-btn {
+            width: auto;
+            padding: 12px 24px;
+            background: #2AABEE;
+            border-radius: 24px;
+        }
+        
+        /* Список чатов */
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
             background: #2C2C2E;
             border-radius: 16px;
-        }
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 0 auto 12px;
-        }
-        .user-name { font-size: 18px; font-weight: 600; color: white; }
-        .user-email { font-size: 14px; color: #8E8E93; margin-top: 4px; }
-        .logout-btn {
-            margin-top: 16px;
-            padding: 8px 16px;
-            background: transparent;
-            border: 1px solid #2AABEE;
-            color: #2AABEE;
-            border-radius: 20px;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        .hidden { display: none; }
+        
+        .chat-item:hover {
+            background: #3A3A3C;
+        }
+        
+        .chat-item-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #2AABEE 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .chat-item-info {
+            flex: 1;
+        }
+        
+        .chat-item-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .chat-item-preview {
+            font-size: 12px;
+            color: #8E8E93;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Табы */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: #2C2C2E;
+            border-radius: 14px;
+            cursor: pointer;
+            color: #8E8E93;
+        }
+        
+        .tab.active {
+            background: #2AABEE;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="card" id="app">
-        <div class="logo">Z</div>
-        <h1>ZENO</h1>
-        <div class="subtitle">Мессенджер будущего</div>
-        
+        <!-- Экран 1: Вход -->
         <div id="loginScreen">
-            <button class="google-btn" id="googleLogin">
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Войти через Google
-            </button>
+            <div class="logo">Z</div>
+            <h1>ZENO</h1>
+            <div class="subtitle">Мессенджер будущего</div>
+            <input type="tel" id="phoneInput" class="input-field" placeholder="+7 900 000 00 00">
+            <button id="nextBtn">Далее</button>
         </div>
         
-        <div id="profileScreen" class="hidden">
-            <div class="user-info">
-                <img id="userAvatar" class="avatar" src="" alt="">
-                <div id="userName" class="user-name"></div>
-                <div id="userEmail" class="user-email"></div>
-                <button class="logout-btn" id="logoutBtn">Выйти</button>
+        <!-- Экран 2: Код -->
+        <div id="codeScreen" class="hidden">
+            <div class="logo">Z</div>
+            <h1>ZENO</h1>
+            <div class="subtitle">Введите код из SMS</div>
+            <div class="phone-number" id="displayPhone"></div>
+            <div class="code-digits">
+                <input type="text" maxlength="1" class="code-digit" id="code1">
+                <input type="text" maxlength="1" class="code-digit" id="code2">
+                <input type="text" maxlength="1" class="code-digit" id="code3">
+                <input type="text" maxlength="1" class="code-digit" id="code4">
+                <input type="text" maxlength="1" class="code-digit" id="code5">
+                <input type="text" maxlength="1" class="code-digit" id="code6">
+            </div>
+            <button id="verifyBtn" disabled>Подтвердить</button>
+            <div class="resend-link">
+                <a id="resendBtn">Не пришел код? Отправить снова</a>
+            </div>
+        </div>
+        
+        <!-- Экран 3: Главный -->
+        <div id="mainScreen" class="hidden">
+            <div class="tabs">
+                <div class="tab active" data-tab="chats">Чаты</div>
+                <div class="tab" data-tab="contacts">Контакты</div>
+            </div>
+            
+            <!-- Список чатов -->
+            <div id="chatsView">
+                <div class="chat-list" id="chatList"></div>
+            </div>
+            
+            <!-- Список контактов -->
+            <div id="contactsView" class="hidden">
+                <div class="chat-list" id="contactsList"></div>
+            </div>
+        </div>
+        
+        <!-- Экран 4: Чат -->
+        <div id="chatScreen" class="hidden">
+            <div class="chat-header">
+                <button id="backToMainBtn" class="back-btn">←</button>
+                <div class="chat-avatar" id="chatAvatar">U</div>
+                <div class="chat-user">
+                    <div class="chat-name" id="chatUserName"></div>
+                    <div class="chat-status">online</div>
+                </div>
+            </div>
+            <div class="messages-area" id="messagesArea"></div>
+            <div class="input-area">
+                <input type="text" id="messageInput" class="message-input" placeholder="Сообщение">
+                <button id="sendBtn" class="send-btn">➤</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "firebase/app";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+    <script>
+        // ========== ДАННЫЕ ==========
+        let currentUser = null;
+        let currentChatUser = null;
+        let messages = {}; // { "userId": [{text, time, fromMe}] }
+        let users = [
+            { id: "user2", name: "Анна", avatar: "А", phone: "+7 900 111 22 33" },
+            { id: "user3", name: "Дмитрий", avatar: "Д", phone: "+7 900 444 55 66" },
+            { id: "user4", name: "Екатерина", avatar: "Е", phone: "+7 900 777 88 99" }
+        ];
         
-        const firebaseConfig = {
-            apiKey: "AIzaSyCgb60YBJ9CtE0jz7Z7nKG5V2-NpTaF5yw",
-            authDomain: "zeno-offisal.firebaseapp.com",
-            projectId: "zeno-offisal",
-            storageBucket: "zeno-offisal.firebasestorage.app",
-            messagingSenderId: "280179393071",
-            appId: "1:280179393071:web:227a3806f74cd59e04fcda"
-        };
+        // Инициализация сообщений
+        if (!localStorage.getItem('zeno_messages')) {
+            messages = {};
+            localStorage.setItem('zeno_messages', JSON.stringify(messages));
+        } else {
+            messages = JSON.parse(localStorage.getItem('zeno_messages'));
+        }
         
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        
+        // DOM элементы
         const loginScreen = document.getElementById('loginScreen');
-        const profileScreen = document.getElementById('profileScreen');
-        const googleLoginBtn = document.getElementById('googleLogin');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
+        const codeScreen = document.getElementById('codeScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const chatScreen = document.getElementById('chatScreen');
         
-        googleLoginBtn.onclick = () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    loginScreen.classList.add('hidden');
-                    profileScreen.classList.remove('hidden');
-                    userAvatar.src = user.photoURL || 'https://via.placeholder.com/60';
-                    userName.textContent = user.displayName || 'Пользователь';
-                    userEmail.textContent = user.email;
-                })
-                .catch((error) => {
-                    console.error('Ошибка:', error);
-                    alert('Ошибка: ' + error.message);
+        const phoneInput = document.getElementById('phoneInput');
+        const nextBtn = document.getElementById('nextBtn');
+        const displayPhone = document.getElementById('displayPhone');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        
+        const chatsView = document.getElementById('chatsView');
+        const contactsView = document.getElementById('contactsView');
+        const chatList = document.getElementById('chatList');
+        const contactsList = document.getElementById('contactsList');
+        
+        const chatUserName = document.getElementById('chatUserName');
+        const chatAvatar = document.getElementById('chatAvatar');
+        const messagesArea = document.getElementById('messagesArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const backToMainBtn = document.getElementById('backToMainBtn');
+        
+        // Код для входа
+        const codeInputs = ['code1', 'code2', 'code3', 'code4', 'code5', 'code6'].map(id => document.getElementById(id));
+        
+        // ========== ФУНКЦИИ ВХОДА ==========
+        function checkCodeComplete() {
+            let allFilled = codeInputs.every(input => input.value.length === 1);
+            verifyBtn.disabled = !allFilled;
+        }
+        
+        function setupCodeInputs() {
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('input', () => {
+                    if (input.value.length === 1 && index < 5) {
+                        codeInputs[index + 1].focus();
+                    }
+                    checkCodeComplete();
                 });
-        };
-        
-        logoutBtn.onclick = () => {
-            signOut(auth).then(() => {
-                loginScreen.classList.remove('hidden');
-                profileScreen.classList.add('hidden');
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
             });
+        }
+        
+        nextBtn.onclick = () => {
+            if (phoneInput.value.trim()) {
+                currentUser = { id: "user1", name: phoneInput.value, avatar: "U" };
+                displayPhone.textContent = phoneInput.value;
+                loginScreen.classList.add('hidden');
+                codeScreen.classList.remove('hidden');
+            }
         };
         
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginScreen.classList.add('hidden');
-                profileScreen.classList.remove('hidden');
-                userAvatar.src = user.photoURL || 'https://via.placeholder.com/60';
-                userName.textContent = user.displayName || 'Пользователь';
-                userEmail.textContent = user.email;
-            } else {
-                loginScreen.classList.remove('hidden');
-                profileScreen.classList.add('hidden');
+        verifyBtn.onclick = () => {
+            let code = codeInputs.map(i => i.value).join('');
+            if (code.length === 6) {
+                codeScreen.classList.add('hidden');
+                mainScreen.classList.remove('hidden');
+                renderChatList();
+                renderContactsList();
             }
+        };
+        
+        resendBtn.onclick = () => {
+            codeInputs.forEach(input => input.value = '');
+            verifyBtn.disabled = true;
+            codeInputs[0].focus();
+        };
+        
+        // ========== ЧАТ ==========
+        function renderMessages() {
+            if (!currentChatUser) return;
+            const chatId = currentChatUser.id;
+            const chatMessages = messages[chatId] || [];
+            
+            messagesArea.innerHTML = '';
+            chatMessages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.fromMe ? 'message-mine' : 'message-theirs'}`;
+                div.innerHTML = `${msg.text}<div class="message-time">${msg.time}</div>`;
+                messagesArea.appendChild(div);
+            });
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text || !currentChatUser) return;
+            
+            const chatId = currentChatUser.id;
+            if (!messages[chatId]) messages[chatId] = [];
+            
+            messages[chatId].push({
+                text: text,
+                time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+                fromMe: true
+            });
+            
+            // Симулируем ответ
+            setTimeout(() => {
+                if (!messages[chatId]) messages[chatId] = [];
+                messages[chatId].push({
+                    text: "Спасибо за сообщение! Я сейчас занят, отвечу позже.",
+                    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+                    fromMe: false
+                });
+                localStorage.setItem('zeno_messages', JSON.stringify(messages));
+                if (currentChatUser && currentChatUser.id === chatId) {
+                    renderMessages();
+                }
+                renderChatList();
+            }, 1000);
+            
+            localStorage.setItem('zeno_messages', JSON.stringify(messages));
+            renderMessages();
+            messageInput.value = '';
+            renderChatList();
+        }
+        
+        function openChat(user) {
+            currentChatUser = user;
+            chatUserName.textContent = user.name;
+            chatAvatar.textContent = user.avatar;
+            mainScreen.classList.add('hidden');
+            chatScreen.classList.remove('hidden');
+            renderMessages();
+        }
+        
+        function renderChatList() {
+            chatList.innerHTML = '';
+            users.forEach(user => {
+                const chatId = user.id;
+                const lastMsg = messages[chatId] && messages[chatId].length > 0 
+                    ? messages[chatId][messages[chatId].length - 1].text 
+                    : "Нет сообщений";
+                
+                const div = document.createElement('div');
+                div.className = 'chat-item';
+                div.innerHTML = `
+                    <div class="chat-item-avatar">${user.avatar}</div>
+                    <div class="chat-item-info">
+                        <div class="chat-item-name">${user.name}</div>
+                        <div class="chat-item-preview">${lastMsg.substring(0, 30)}</div>
+                    </div>
+                `;
+                div.onclick = () => openChat(user);
+                chatList.appendChild(div);
+            });
+        }
+        
+        function renderContactsList() {
+            contactsList.innerHTML = '';
+            users.forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'chat-item';
+                div.innerHTML = `
+                    <div class="chat-item-avatar">${user.avatar}</div>
+                    <div class="chat-item-info">
+                        <div class="chat-item-name">${user.name}</div>
+                        <div class="chat-item-preview">${user.phone}</div>
+                    </div>
+                `;
+                div.onclick = () => openChat(user);
+                contactsList.appendChild(div);
+            });
+        }
+        
+        // ========== ТАБЫ ==========
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const tabName = tab.dataset.tab;
+                if (tabName === 'chats') {
+                    chatsView.classList.remove('hidden');
+                    contactsView.classList.add('hidden');
+                } else {
+                    chatsView.classList.add('hidden');
+                    contactsView.classList.remove('hidden');
+                }
+            };
         });
-    </script>
-</body>
-</html> 
+        
+        backToMainBtn.onclick = () => {
+            chatScreen.classList.add('hidden');
+            mainScreen.classList.remove('hidden');
+            currentChatUser = null;
+        };
+        
+        sendBtn
